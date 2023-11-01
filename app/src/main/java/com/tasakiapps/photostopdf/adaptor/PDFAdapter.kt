@@ -1,6 +1,7 @@
 package com.tasakiapps.photostopdf.adaptor
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,6 +15,9 @@ import com.tasakiapps.photostopdf.R
 import com.tasakiapps.photostopdf.databinding.PdfViewBinding
 import com.tasakiapps.photostopdf.model.GridViewItem
 import com.tasakiapps.photostopdf.model.PdfModel
+import com.tasakiapps.photostopdf.ui.PDFViewActivity
+import com.tasakiapps.photostopdf.utils.GetThumbnail
+import java.io.File
 
 
 class PDFAdapter(val list:List<PdfModel>, val context:Context) :RecyclerView.Adapter<PDFAdapter.ViewHolder>() {
@@ -32,6 +36,17 @@ class PDFAdapter(val list:List<PdfModel>, val context:Context) :RecyclerView.Ada
         val itemData = list[position]
         with(holder){
             binding.tvFile.text = itemData.fileName
+              if(!GetThumbnail.isPdfPasswordProtected(itemData.uri)){
+                  binding.ivPdf.setImageBitmap(GetThumbnail.
+                  generateThumbnailFromPdf(context,File(itemData.uri)))
+              }
+
+
+
+            binding.root.setOnClickListener {
+                context.startActivity(Intent(context,PDFViewActivity::class.java)
+                    .putExtra("pdf_path", File(itemData.uri).absolutePath))
+            }
         }
 
 

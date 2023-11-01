@@ -6,26 +6,59 @@
     android:layout_height="match_parent"
     tools:context=".ImagesActivity">
 
+
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+
         android:orientation="vertical">
 
-    <androidx.appcompat.widget.AppCompatSpinner
-        android:layout_width="149dp"
-        android:layout_height="40dp"
-        style="@style/Widget.AppCompat.Spinner.DropDown"
-        android:id="@+id/spinner"
-        android:layout_gravity="center"
-        android:layout_marginTop="@dimen/_20sdp"
-      />
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:layout_width="149dp"
+                android:layout_height="40dp"
+                style="@style/Widget.AppCompat.Spinner.DropDown"
+                android:id="@+id/spinner"
+                android:layout_weight="1"
+                android:layout_marginStart="20dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_20sdp"
+                />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Convert to PDF"
+                android:gravity="end"
+                android:id="@+id/pdfBT"
+                android:layout_weight="1"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_gravity="center"
+                android:textSize="@dimen/_10sdp"
+                />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+
+
+
+
+
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/rv"
         app:spanCount="3"
+        android:layout_marginBottom="@dimen/_80sdp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         android:layout_marginTop="@dimen/_20sdp"/>
     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -48,7 +81,19 @@
         android:id="@+id/rv_selected"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:orientation="horizontal"
-        android:layout_marginTop="@dimen/_20sdp"/>
+       />
     </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/red"
+        android:id="@+id/progress"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

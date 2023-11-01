@@ -1,7 +1,9 @@
 package com.tasakiapps.photostopdf
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
@@ -12,7 +14,14 @@ import com.tasakiapps.photostopdf.adaptor.UserSelectImageAdapter
 import com.tasakiapps.photostopdf.databinding.ActivityImagesBinding
 import com.tasakiapps.photostopdf.extension.RetrivePhoto
 import com.tasakiapps.photostopdf.model.GridViewItem
+import com.tasakiapps.photostopdf.ui.PDFViewActivity
+import com.tasakiapps.photostopdf.utils.ImageToPDF
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
@@ -46,6 +55,44 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
         getImageDirectories(this@ImagesActivity)?.forEach {
             Log.d("Images >>>", "${it}")
+        }
+        binding.pdfBT.setOnClickListener {
+            binding.progress.visibility = View.VISIBLE
+            if(selectedImages.isNotEmpty()){
+                val imagePaths = ArrayList<String>()
+                val converter = ImageToPDF(this)
+
+                selectedImages.forEach {
+                  imagePaths.add(it.path)
+                }
+              /*  if (converter.convertImagesToPdf(imagePaths, pdfFilePath)) {
+
+                    // Conversion successful
+                    Log.d("Conversion successful",">>>>>>>")
+                    Log.d("Conversion Path",">>>>>>>${pdfFilePath}")
+                } else {
+                    // Conversion failed
+                    Log.d("Conversion Failed",">>>>>>>")
+                }*/
+                CoroutineScope(Dispatchers.IO).launch {
+                    converter.convertImagesToPdf(this@ImagesActivity,imagePaths,
+                        "File${System.currentTimeMillis()}.pdf")
+
+
+                }
+                converter.pdfCallback={
+                    if(it){
+                        var pdfPath = "${Environment.getExternalStorageDirectory()}" +
+                                "/PDFFiles/File${System.currentTimeMillis()}.pdf"
+//                        binding.progress.visibility = View.GONE
+                        startActivity(Intent(this@ImagesActivity,
+                            PDFViewActivity::class.java).apply {
+                                putExtra("pdf_path",File(pdfPath).absolutePath)
+                        })
+                    }
+                }
+
+            }
         }
     }
 

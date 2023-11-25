@@ -16,6 +16,9 @@ import com.tasakiapps.photostopdf.adaptor.PDFAdapter
 import com.tasakiapps.photostopdf.databinding.ActivityPdfactivityBinding
 import com.tasakiapps.photostopdf.extension.changeStatusBarColor
 import com.tasakiapps.photostopdf.model.PdfModel
+import com.tasakiapps.photostopdf.utils.GetThumbnail
+import com.tasakiapps.photostopdf.utils.Utils.getPdfPathFromUri
+import java.io.File
 
 
 class PDFActivity : AppCompatActivity() {

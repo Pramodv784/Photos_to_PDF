@@ -23,6 +23,7 @@ import com.tasakiapps.photostopdf.ui.PDFActivity
 import com.tasakiapps.photostopdf.utils.CustomDialog.showAlert
 
 
+
 class MainActivity : AppCompatActivity() {
     private lateinit var binding:ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,6 +31,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         initViews()
         setContentView(binding.root)
+
+
 
 
     }

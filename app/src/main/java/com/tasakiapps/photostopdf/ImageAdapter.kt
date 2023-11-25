@@ -11,9 +11,8 @@ import com.tasakiapps.photostopdf.databinding.GridViewItemBinding
 import com.tasakiapps.photostopdf.model.GridViewItem
 
 
-class ImageAdapter(val list: List<GridViewItem>, val context: Context) :
-    RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
-    lateinit var itemClick: (item: GridViewItem) -> Unit
+class ImageAdapter(val context:Context,private var list:List<GridViewItem> = listOf()) :RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
+   lateinit var itemClick:(item:GridViewItem) -> Unit
 
     override fun onCreateViewHolder(
         parent: ViewGroup, viewType: Int
@@ -22,6 +21,10 @@ class ImageAdapter(val list: List<GridViewItem>, val context: Context) :
             GridViewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
         return ViewHolder(binding)
+    }
+
+     fun  setList( imageList:List<GridViewItem>){
+        list = imageList
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

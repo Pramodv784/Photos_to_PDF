@@ -16,7 +16,7 @@ import java.io.IOException
 
 class ImageToPDF(private val context: Context) {
 
-    lateinit var pdfCallback:(Boolean) -> Unit
+    lateinit var pdfCallback:(Boolean, String) -> Unit
     fun convertImagesToPdf(imagePaths: List<String>, pdfFilePath: String): Boolean {
         val document = Document()
         try {
@@ -40,7 +40,7 @@ class ImageToPDF(private val context: Context) {
     suspend fun convertImagesToPdf(context: Context, imagePaths: List<String>, pdfFileName: String) {
         // Create a new PdfDocument
         val pdfDocument = PdfDocument()
-        pdfCallback.invoke(false)
+        pdfCallback.invoke(false,"")
 
         // Iterate through the list of image paths
         for (imagePath in imagePaths) {
@@ -88,7 +88,7 @@ class ImageToPDF(private val context: Context) {
 
             // Close the FileOutputStream
             fileOutputStream.close()
-            pdfCallback.invoke(true)
+            pdfCallback.invoke(true,pdfFileName)
             // Inform the user that the PDF has been saved
             // You may want to show a Toast or update the UI accordingly
 

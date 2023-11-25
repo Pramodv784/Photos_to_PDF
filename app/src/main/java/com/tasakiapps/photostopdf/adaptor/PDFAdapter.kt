@@ -10,6 +10,7 @@ import com.tasakiapps.photostopdf.model.GridViewItem
 import com.tasakiapps.photostopdf.model.PdfModel
 import com.tasakiapps.photostopdf.ui.PDFViewActivity
 import com.tasakiapps.photostopdf.utils.GetThumbnail
+import com.tasakiapps.photostopdf.utils.Utils
 import java.io.File
 
 
@@ -44,6 +45,7 @@ class PDFAdapter(val list: List<PdfModel>, val context: Context) :
                         .putExtra("pdf_path", File(itemData.uri).absolutePath)
                 )
             }
+
         }
 
 

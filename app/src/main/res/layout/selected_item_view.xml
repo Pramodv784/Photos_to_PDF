@@ -1,37 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:layout_margin="@dimen/_5sdp"
     android:layout_width="@dimen/_50sdp"
-    android:layout_height="@dimen/_50sdp">
+    android:layout_height="@dimen/_50sdp"
+    android:layout_margin="@dimen/_5sdp"
+    android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/_5sdp"
         app:cardCornerRadius="@dimen/_10sdp">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/itemImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
 
-                android:id="@+id/itemImage"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="X"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:id="@+id/tv_count"
-            android:background="@drawable/red_circle"
-            android:padding="@dimen/_5sdp"
-            android:textSize="@dimen/_6sdp"
-            android:textColor="@color/white"/>
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:id="@+id/tv_count"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="3dp"
+                android:background="@drawable/red_circle"
+                android:gravity="center"
+                android:padding="1dp"
+                android:text="X"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_6sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

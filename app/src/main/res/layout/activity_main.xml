@@ -4,34 +4,121 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_background"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-  
-    
-    <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="@dimen/_150sdp"
-        android:layout_height="@dimen/_150sdp"
-        android:layout_marginTop="@dimen/_30sdp"
-        android:layout_gravity="center"
-        android:src="@drawable/ic_home_bg"
-        />
-
-
-    <androidx.appcompat.widget.AppCompatButton
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_30sdp"
-        android:text="Start Converting"
+        android:layout_height="54dp"
+        android:layout_marginTop="11dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="31dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/urbanist_bold"
+            android:text="@string/pdf_maker"
+            android:textColor="@color/color_text_red"
+            android:textSize="18sp" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivSetting"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="9dp"
+            app:srcCompat="@drawable/ic_setting" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_259sdp"
+        android:layout_marginHorizontal="@dimen/_35sdp"
+        android:layout_marginTop="17dp"
+        app:cardCornerRadius="@dimen/_15sdp"
+        app:strokeColor="@color/white">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="@dimen/_150sdp"
+            android:layout_height="@dimen/_150sdp"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:src="@drawable/ic_home_bg" />
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/convertBT"
-        />
-    <androidx.appcompat.widget.AppCompatButton
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:text="File Converted"
+        android:layout_height="69dp"
+        android:layout_marginHorizontal="39dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bg_red_gradient"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="47dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/urbanist_semibold"
+            android:text="@string/start_converting"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <FrameLayout
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="28dp"
+            android:background="@drawable/bg_circle">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/ic_forward" />
+        </FrameLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/bt_file"
-        />
+        android:layout_width="match_parent"
+        android:layout_height="69dp"
+        android:layout_marginHorizontal="39dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bg_blue_gradient"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="47dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/urbanist_semibold"
+            android:text="@string/file_converted"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <FrameLayout
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="28dp"
+            android:background="@drawable/bg_circle">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/ic_tick" />
+        </FrameLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 
 </LinearLayout>

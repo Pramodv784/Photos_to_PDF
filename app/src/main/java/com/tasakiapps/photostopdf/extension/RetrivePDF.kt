@@ -1,9 +1,9 @@
 package com.tasakiapps.photostopdf.extension
 
-import android.content.Context
-import androidx.annotation.WorkerThread
-import com.tasakiapps.photostopdf.model.PdfModel
-import java.io.File
+import android.app.Activity
+import android.view.WindowManager
+import androidx.core.content.ContextCompat
+
 /*
 @WorkerThread
 fun Context.RetrivePDF(dir: File):ArrayList<PdfModel>{
@@ -27,3 +27,13 @@ fun Context.RetrivePDF(dir: File):ArrayList<PdfModel>{
     }
     return pdflist
 }*/
+
+
+fun Activity.changeStatusBarColor(color: Int) {
+    val window = this.window
+    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+    window.statusBarColor = ContextCompat.getColor(this, color)
+
+}
+

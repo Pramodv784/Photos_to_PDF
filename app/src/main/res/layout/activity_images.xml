@@ -8,12 +8,13 @@
 
 
     <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/llTop"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/ll_bottom"
         app:layout_constraintStart_toStartOf="parent"
-
-        android:orientation="vertical">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
@@ -21,79 +22,105 @@
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatSpinner
-                android:layout_width="149dp"
-                android:layout_height="40dp"
-                style="@style/Widget.AppCompat.Spinner.DropDown"
                 android:id="@+id/spinner"
-                android:layout_weight="1"
-                android:layout_marginStart="20dp"
+                style="@style/Widget.AppCompat.Spinner.DropDown"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/_20sdp"
-                />
+                android:layout_marginStart="20dp"
+                android:padding="0dp" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <View
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_10sdp"
+                android:layout_weight="1" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/pdfBT"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Convert to PDF"
-                android:gravity="end"
-                android:id="@+id/pdfBT"
-                android:layout_weight="1"
-                android:layout_marginTop="@dimen/_10sdp"
                 android:layout_gravity="center"
-                android:textSize="@dimen/_10sdp"
-                />
+                android:layout_marginEnd="17dp"
+                android:backgroundTint="@color/color_text_red"
+                android:drawableEnd="@drawable/ic_forward_white"
+                android:fontFamily="@font/urbanist_semibold"
+                android:gravity="center"
+                android:text="Next"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-
-
-
-
-
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/rv"
-        app:spanCount="3"
-        android:layout_marginBottom="@dimen/_80sdp"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        android:layout_marginTop="@dimen/_20sdp"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="17dp"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="3"
+            tools:itemCount="50"
+            tools:listitem="@layout/grid_view_item" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/_10sdp"
         android:id="@+id/ll_bottom"
-        android:visibility="gone"
-        android:background="@drawable/bottom_bg_red"
-        app:layout_constraintBottom_toBottomOf="parent"
-        >
-
-
-
-    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/rv_selected"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:orientation="horizontal"
-       />
+        android:background="@drawable/bottom_bg_red"
+        android:orientation="vertical"
+        android:padding="@dimen/_10sdp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvSelectedCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/urbanist_bold"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                tools:text="Selected: 3" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvDeselect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/urbanist_bold"
+                android:text="@string/deselect_all"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_selected"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 
     <ProgressBar
+        android:id="@+id/progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminateTint="@color/red"
-        android:id="@+id/progress"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:visibility="gone"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

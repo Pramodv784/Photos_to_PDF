@@ -4,13 +4,81 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_background"
+    android:orientation="vertical"
     tools:context=".ui.PDFActivity">
 
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/llHeader"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_marginTop="11dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="31dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/urbanist_bold"
+            android:text="@string/pdf_manager"
+            android:textColor="@color/color_text_red"
+            android:textSize="18sp" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivMenu"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="9dp"
+            app:srcCompat="@drawable/ic_vertical_menu" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="26dp"
+        android:layout_marginHorizontal="23dp"
+        android:background="@drawable/tab_background"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvPdfConverted"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/tab_background"
+            android:backgroundTint="@color/color_text_red"
+            android:fontFamily="@font/urbanist_medium"
+            android:gravity="center"
+            android:text="@string/pdf_converted"
+            android:textColor="@color/white"
+            android:textSize="11sp" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvPdfReader"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/tab_background"
+            android:fontFamily="@font/urbanist_medium"
+            android:gravity="center"
+            android:text="@string/pdf_reader"
+            android:textColor="@color/color_text_grey"
+            android:textSize="11sp" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_pdf"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/rv_pdf"
-        app:spanCount="2"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"/>
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="2" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

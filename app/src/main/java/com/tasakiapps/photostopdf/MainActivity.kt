@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.tasakiapps.photostopdf.databinding.ActivityMainBinding
+import com.tasakiapps.photostopdf.extension.changeStatusBarColor
 import com.tasakiapps.photostopdf.ui.PDFActivity
 import com.tasakiapps.photostopdf.utils.CustomDialog.showAlert
 
@@ -34,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
+        this.changeStatusBarColor(R.color.color_background)
         if(!checkPermission())requestPermission()
         binding.convertBT.setOnClickListener {
           if(!checkPermission()){

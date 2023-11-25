@@ -8,8 +8,5 @@ class ConvertToPDFActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_convert_to_pdfactivity)
-
-
-
     }
 }

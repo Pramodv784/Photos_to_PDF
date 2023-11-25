@@ -5,24 +5,21 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tasakiapps.photostopdf.databinding.GridViewItemBinding
 import com.tasakiapps.photostopdf.model.GridViewItem
 
 
-class ImageAdapter(val list:List<GridViewItem>, val context:Context) :RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
-   lateinit var itemClick:(item:GridViewItem) -> Unit
+class ImageAdapter(val list: List<GridViewItem>, val context: Context) :
+    RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
+    lateinit var itemClick: (item: GridViewItem) -> Unit
 
     override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
+        parent: ViewGroup, viewType: Int
     ): ViewHolder {
-      val binding = GridViewItemBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        val binding =
+            GridViewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
         return ViewHolder(binding)
     }
@@ -30,19 +27,18 @@ class ImageAdapter(val list:List<GridViewItem>, val context:Context) :RecyclerVi
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val itemData = list[position]
-        with(holder){
+        with(holder) {
 
-            Log.d("Photo Item>>> ","${itemData.title}")
+            Log.d("Photo Item>>> ", "${itemData.title}")
             Glide.with(context).load(itemData.path).placeholder(R.drawable.ic_home_bg)
                 .into(binding.itemImage)
             binding.itemImage.setOnClickListener {
-                if(!itemData.isSelected){
+                if (!itemData.isSelected) {
                     itemData.isSelected = true
-                  binding.tvCount.visibility = View.VISIBLE
+                    binding.tvCount.visibility = View.VISIBLE
                     binding.lConst.setBackgroundResource(R.drawable.red_stroke)
                     itemClick.invoke(itemData)
-                }
-                else{
+                } else {
                     itemData.isSelected = false
                     binding.tvCount.visibility = View.GONE
                     itemClick.invoke(itemData)
@@ -52,12 +48,11 @@ class ImageAdapter(val list:List<GridViewItem>, val context:Context) :RecyclerVi
         }
 
 
-
     }
 
     override fun getItemCount(): Int {
-      return  list.size
+        return list.size
     }
 
-    inner class ViewHolder(val binding:GridViewItemBinding):RecyclerView.ViewHolder(binding.root)
+    inner class ViewHolder(val binding: GridViewItemBinding) : RecyclerView.ViewHolder(binding.root)
 }

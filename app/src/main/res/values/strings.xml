@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Photos to PDF</string>
+    <string name="pdf_maker">PDF Maker</string>
+    <string name="start_converting">Start Converting</string>
+    <string name="file_converted">File Converted</string>
+    <string name="deselect_all">Deselect all</string>
+    <string name="setting">Settings</string>
+    <string name="file_save_location">File save location</string>
+    <string name="policy">Policy</string>
+    <string name="check_for_new_version">Check for new version</string>
+    <string name="bug_report_feedback"><![CDATA[Bug report & feedback]]></string>
+    <string name="pdf_manager">PDF Manager</string>
+    <string name="pdf_converted">PDF Converted</string>
+    <string name="pdf_reader">PDF Reader</string>
+
 </resources>

@@ -2,22 +2,24 @@ package com.tasakiapps.photostopdf.ui
 
 import android.content.ContentResolver
 import android.content.Context
+import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment.getExternalStorageDirectory
 import android.provider.MediaStore
 import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.ContextCompat
+import com.tasakiapps.photostopdf.R
 import com.tasakiapps.photostopdf.adaptor.PDFAdapter
 import com.tasakiapps.photostopdf.databinding.ActivityPdfactivityBinding
+import com.tasakiapps.photostopdf.extension.changeStatusBarColor
 import com.tasakiapps.photostopdf.model.PdfModel
-import com.tasakiapps.photostopdf.utils.GetThumbnail
-import java.io.File
 
 
 class PDFActivity : AppCompatActivity() {
-    private lateinit var binding:ActivityPdfactivityBinding
+    private lateinit var binding: ActivityPdfactivityBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPdfactivityBinding.inflate(layoutInflater)
@@ -26,20 +28,28 @@ class PDFActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
-        val list  = getExternalPDFFileList()
+        this.changeStatusBarColor(R.color.color_background)
+        val list = getExternalPDFFileList()
         list?.forEach {
-            Log.d("pdf>>>>","${it.fileName}")
+            Log.d("pdf>>>>", "${it.fileName}")
         }
-        binding.rvPdf.adapter = PDFAdapter(list?.reversed()!!,this@PDFActivity)
+        binding.rvPdf.adapter = PDFAdapter(list?.reversed()!!, this@PDFActivity)
+        binding.tvPdfConverted.setOnClickListener {
+            changeBackground(true, binding.tvPdfConverted, binding.tvPdfReader)
+        }
+        binding.tvPdfReader.setOnClickListener {
+            changeBackground(false, binding.tvPdfConverted, binding.tvPdfReader)
 
+        }
     }
+
     private fun getExternalPDFFileList(): ArrayList<PdfModel>? {
         val cr = contentResolver
         val uri = MediaStore.Files.getContentUri("external")
         val projection =
             arrayOf(MediaStore.Files.FileColumns._ID, MediaStore.Files.FileColumns.DISPLAY_NAME)
-        val selection = (MediaStore.Files.FileColumns.MEDIA_TYPE + "="
-                + MediaStore.Files.FileColumns.MEDIA_TYPE)
+        val selection =
+            (MediaStore.Files.FileColumns.MEDIA_TYPE + "=" + MediaStore.Files.FileColumns.MEDIA_TYPE)
         val selectionArgs: Array<String>? = null
         val selectionMimeType = MediaStore.Files.FileColumns.MIME_TYPE + "=?"
         val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension("pdf")
@@ -52,12 +62,15 @@ class PDFActivity : AppCompatActivity() {
             val fileId = cursor.getLong(columnIndex)
             val fileUri = Uri.parse("$uri/$fileId")
             val displayName = cursor.getString(cursor.getColumnIndex(projection[1]))
-            uriList.add(PdfModel(displayName, getPdfPathFromUri(this@PDFActivity,fileUri)!!))
+            uriList.add(PdfModel(displayName, getPdfPathFromUri(this@PDFActivity, fileUri)!!))
             cursor.moveToNext()
         }
         cursor.close()
         return uriList
     }
+
+
+
     fun getPdfPathFromUri(context: Context, uri: Uri): String? {
         var filePath: String? = null
 
@@ -72,5 +85,53 @@ class PDFActivity : AppCompatActivity() {
         }
 
         return filePath
+    }
+
+    fun changeBackground(
+        isBackGround: Boolean, firstView: AppCompatTextView, secondView: AppCompatTextView
+    ) {
+        if (isBackGround) {
+            firstView.apply {
+                this.backgroundTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        this@PDFActivity, R.color.color_text_red
+                    )
+                );
+                setTextColor(ContextCompat.getColor(this@PDFActivity, R.color.white))
+
+                secondView.apply {
+                    backgroundTintList = ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            this@PDFActivity, R.color.color_grey
+                        )
+                    )
+                    setTextColor(ContextCompat.getColor(this@PDFActivity, R.color.color_text_grey))
+
+                }
+
+
+            }
+        } else {
+            secondView.apply {
+                this.backgroundTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        this@PDFActivity, R.color.color_text_red
+                    )
+                );
+                setTextColor(ContextCompat.getColor(this@PDFActivity, R.color.white))
+
+                firstView.apply {
+                    backgroundTintList = ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            this@PDFActivity, R.color.color_grey
+                        )
+                    )
+                    setTextColor(ContextCompat.getColor(this@PDFActivity, R.color.color_text_grey))
+
+                }
+
+
+            }
+        }
     }
 }

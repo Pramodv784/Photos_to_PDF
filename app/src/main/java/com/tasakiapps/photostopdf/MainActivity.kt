@@ -22,6 +22,7 @@ import com.tasakiapps.photostopdf.ui.PDFActivity
 import com.tasakiapps.photostopdf.utils.CustomDialog.showAlert
 
 
+
 class MainActivity : AppCompatActivity() {
     private lateinit var binding:ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,9 +32,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
+
+
     }
 
     private fun initViews() {
+        Log.d("External Direct",">>>>>>${this@MainActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)}")
         if(!checkPermission())requestPermission()
         binding.convertBT.setOnClickListener {
           if(!checkPermission()){

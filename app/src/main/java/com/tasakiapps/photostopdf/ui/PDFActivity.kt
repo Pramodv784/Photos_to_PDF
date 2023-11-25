@@ -13,6 +13,7 @@ import com.tasakiapps.photostopdf.adaptor.PDFAdapter
 import com.tasakiapps.photostopdf.databinding.ActivityPdfactivityBinding
 import com.tasakiapps.photostopdf.model.PdfModel
 import com.tasakiapps.photostopdf.utils.GetThumbnail
+import com.tasakiapps.photostopdf.utils.Utils.getPdfPathFromUri
 import java.io.File
 
 
@@ -58,19 +59,5 @@ class PDFActivity : AppCompatActivity() {
         cursor.close()
         return uriList
     }
-    fun getPdfPathFromUri(context: Context, uri: Uri): String? {
-        var filePath: String? = null
 
-        val projection = arrayOf(MediaStore.Images.Media.DATA)
-        val contentResolver: ContentResolver = context.contentResolver
-
-        contentResolver.query(uri, projection, null, null, null)?.use { cursor ->
-            if (cursor.moveToFirst()) {
-                val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-                filePath = cursor.getString(columnIndex)
-            }
-        }
-
-        return filePath
-    }
 }

@@ -2,6 +2,7 @@ package com.tasakiapps.photostopdf
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -10,12 +11,16 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import com.tasakiapps.photostopdf.adaptor.UserSelectImageAdapter
 import com.tasakiapps.photostopdf.databinding.ActivityImagesBinding
 import com.tasakiapps.photostopdf.extension.RetrivePhoto
 import com.tasakiapps.photostopdf.model.GridViewItem
 import com.tasakiapps.photostopdf.ui.PDFViewActivity
 import com.tasakiapps.photostopdf.utils.ImageToPDF
+import com.tasakiapps.photostopdf.utils.Utils
+import com.tasakiapps.photostopdf.utils.Utils.getFileUri
+import com.tasakiapps.photostopdf.utils.Utils.retrievePhotos
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,7 +33,7 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     private lateinit var binding: ActivityImagesBinding
     val directories = ArrayList<String>()
     private var selectedImages = ArrayList<GridViewItem>()
-    private lateinit var adapter: ImageAdapter
+    private lateinit var imageAdaptor: ImageAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityImagesBinding.inflate(layoutInflater)
@@ -39,6 +44,7 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     private fun initViews() {
         binding.spinner.onItemSelectedListener = this
+        imageAdaptor = ImageAdapter( this)
 
         var listFolder = ArrayList<String>()
         getImageDirectories(this)?.forEach {
@@ -53,9 +59,10 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         binding.spinner.adapter = adapter
 
 
-        getImageDirectories(this@ImagesActivity)?.forEach {
-            Log.d("Images >>>", "${it}")
-        }
+
+
+
+
         binding.pdfBT.setOnClickListener {
             binding.progress.visibility = View.VISIBLE
             if(selectedImages.isNotEmpty()){
@@ -75,20 +82,21 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                     Log.d("Conversion Failed",">>>>>>>")
                 }*/
                 CoroutineScope(Dispatchers.IO).launch {
+                    Log.d("PDF File Name Time>>>","${System.currentTimeMillis()}")
                     converter.convertImagesToPdf(this@ImagesActivity,imagePaths,
                         "File${System.currentTimeMillis()}.pdf")
-
-
                 }
-                converter.pdfCallback={
-                    if(it){
+                converter.pdfCallback={ status, fileName ->
+                    if(status){
+                        Log.d("PDF File Name >>>","${fileName}")
                         var pdfPath = "${Environment.getExternalStorageDirectory()}" +
-                                "/PDFFiles/File${System.currentTimeMillis()}.pdf"
-//                        binding.progress.visibility = View.GONE
+                                "/PDFFiles/${fileName}"
                         startActivity(Intent(this@ImagesActivity,
                             PDFViewActivity::class.java).apply {
-                                putExtra("pdf_path",File(pdfPath).absolutePath)
+                                putExtra("pdf_path",pdfPath
+                                  )
                         })
+                        finish()
                     }
                 }
 
@@ -121,12 +129,14 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
         Log.d("Select Folder >>", "${directories[p2]}")
-        val listImage = directories.get(p2)
-        adapter = ImageAdapter(this@ImagesActivity.RetrivePhoto(listImage).reversed(), this)
-        binding.rv.adapter = adapter
-        adapter.notifyDataSetChanged()
+        var directoryName = ""
+            directoryName = directories.get(p2)
+        imageAdaptor.setList(RetrivePhoto(getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString()))
+        binding.rv.adapter = imageAdaptor
+        imageAdaptor.notifyDataSetChanged()
+        imageAdaptor.notifyDataSetChanged()
 
-        adapter.itemClick = {
+        imageAdaptor.itemClick = {
             if (it.isSelected) {
                 selectedImages.add(it)
             } else {
@@ -160,7 +170,7 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     }
 
     override fun onNothingSelected(p0: AdapterView<*>?) {
-        setUserSelected()
+       // setUserSelected()
     }
 
 

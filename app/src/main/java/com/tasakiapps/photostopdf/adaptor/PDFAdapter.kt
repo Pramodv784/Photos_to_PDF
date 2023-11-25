@@ -17,6 +17,7 @@ import com.tasakiapps.photostopdf.model.GridViewItem
 import com.tasakiapps.photostopdf.model.PdfModel
 import com.tasakiapps.photostopdf.ui.PDFViewActivity
 import com.tasakiapps.photostopdf.utils.GetThumbnail
+import com.tasakiapps.photostopdf.utils.Utils
 import java.io.File
 
 
@@ -36,17 +37,16 @@ class PDFAdapter(val list:List<PdfModel>, val context:Context) :RecyclerView.Ada
         val itemData = list[position]
         with(holder){
             binding.tvFile.text = itemData.fileName
-              if(!GetThumbnail.isPdfPasswordProtected(itemData.uri)){
+             /* if(!GetThumbnail.isPdfPasswordProtected(itemData.uri)){
                   binding.ivPdf.setImageBitmap(GetThumbnail.
                   generateThumbnailFromPdf(context,File(itemData.uri)))
-              }
-
-
-
+              }*/
+             binding.tvSize.text = ""
             binding.root.setOnClickListener {
                 context.startActivity(Intent(context,PDFViewActivity::class.java)
                     .putExtra("pdf_path", File(itemData.uri).absolutePath))
             }
+
         }
 
 

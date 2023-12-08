@@ -128,11 +128,12 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         Log.d("Select Folder >>", "${directories[p2]}")
         var directoryName = ""
             directoryName = directories.get(p2)
-        imageAdaptor.setList(RetrivePhoto(getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString()))
+        imageAdaptor.setList(RetrivePhoto(directoryName))
         binding.rv.adapter = imageAdaptor
         imageAdaptor.notifyDataSetChanged()
-        imageAdaptor.notifyDataSetChanged()
-
+        binding.tvDeselect.setOnClickListener {
+            deselectALl()
+        }
         imageAdaptor.itemClick = {
             if (it.isSelected) {
                 selectedImages.add(it)
@@ -159,7 +160,6 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                 if (selectedImages.size == 0) {
                     binding.llBottom.visibility = View.GONE
                 }
-
             }
 
         } else {
@@ -170,14 +170,14 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     }
 
     override fun onNothingSelected(p0: AdapterView<*>?) {
-       // setUserSelected()
+        setUserSelected()
     }
 
     fun deselectALl() {
         selectedImages.removeAll {
             it.isSelected
         }
-        adapter.notifyDataSetChanged()
+        imageAdaptor.notifyDataSetChanged()
         setUserSelected()
     }
 }

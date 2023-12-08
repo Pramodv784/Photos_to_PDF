@@ -31,11 +31,11 @@ class PDFAdapter(val list: List<PdfModel>, val context: Context) :
         val itemData = list[position]
         with(holder) {
             binding.tvFile.text = itemData.fileName
-            if (!GetThumbnail.isPdfPasswordProtected(itemData.uri)) {
+           /* if (!GetThumbnail.isPdfPasswordProtected(itemData.uri)) {
                 binding.ivPdf.setImageBitmap(
                     GetThumbnail.generateThumbnailFromPdf(context, File(itemData.uri))
                 )
-            }
+            }*/
 
 
 

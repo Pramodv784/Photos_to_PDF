@@ -27,7 +27,8 @@
             android:exported="false" />
         <activity
             android:name=".ui.PDFActivity"
-            android:exported="false" />
+            android:exported="false"
+           />
         <activity
             android:name=".ImagesActivity"
             android:exported="false" />

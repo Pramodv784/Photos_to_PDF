@@ -10,13 +10,35 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/llHeader"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:titleTextColor="@color/black"
-            android:elevation="4dp"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:layout_height="54dp"
+            android:layout_marginTop="11dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="31dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/urbanist_bold"
+                android:text="@string/pdf_manager"
+                android:textColor="@color/color_text_red"
+                android:textSize="18sp" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivShare"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="9dp"
+                app:srcCompat="@android:drawable/ic_menu_share"
+                app:tint="@color/color_text_red"/>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
     </com.google.android.material.appbar.AppBarLayout>
     <RelativeLayout

@@ -3,39 +3,35 @@ package com.tasakiapps.photostopdf.utils
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.pdf.PdfRenderer
+import android.media.ThumbnailUtils
 import android.os.ParcelFileDescriptor
+import android.provider.MediaStore
 import com.itextpdf.text.pdf.PdfReader
 import java.io.File
 import java.io.IOException
 
 object GetThumbnail {
     fun generateThumbnailFromPdf(context: Context, pdfFile: File): Bitmap? {
-        try {
-            val parcelFileDescriptor: ParcelFileDescriptor =
-                ParcelFileDescriptor.open(pdfFile, ParcelFileDescriptor.MODE_READ_ONLY)
 
-            val pdfRenderer = PdfRenderer(parcelFileDescriptor)
-            val pageCount = pdfRenderer.pageCount
+        val fileDescriptor = ParcelFileDescriptor.open(pdfFile, ParcelFileDescriptor.MODE_READ_ONLY)
+        val pdfRenderer = PdfRenderer(fileDescriptor)
 
-            // For simplicity, we're just grabbing the first page. You can modify this as needed.
-            val pageIndex = 0
-            val page = pdfRenderer.openPage(pageIndex)
+        // Generate a thumbnail for the first page
+        val page = pdfRenderer.openPage(0)
+        val thumbnailBitmap = Bitmap.createBitmap(page.width, page.height, Bitmap.Config.ARGB_8888)
+        page.render(thumbnailBitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+        page.close()
 
-            // Create a Bitmap object and render the page content onto it
-            val bitmap = Bitmap.createBitmap(page.width, page.height, Bitmap.Config.ARGB_8888)
-            page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+        // Save the thumbnail to MediaStore or use it as needed
+      //  val thumbnailUri = saveThumbnailToMediaStore(thumbnailBitmap, "PDF_Thumbnail", "thumbnail.png")
+        // Use thumbnailUri as needed (e.g., set it to an ImageView)
 
-            // Close the page and the PdfRenderer after use
-            page.close()
-            pdfRenderer.close()
-            parcelFileDescriptor.close()
-
-            return bitmap
-        } catch (e: IOException) {
-            e.printStackTrace()
-            return null
-        }
+        // Close resources
+        pdfRenderer.close()
+        fileDescriptor.close()
+        return thumbnailBitmap
     }
+
     fun isPdfPasswordProtected(filePath: String): Boolean {
         try {
             val pdfReader = PdfReader(filePath)

@@ -51,4 +51,6 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     implementation ("com.itextpdf:itextpdf:5.5.13.3")
     implementation ("com.dmitryborodin:pdfview-android:1.1.0")
+    implementation ("androidx.navigation:navigation-fragment-ktx:2.6.0")
+    implementation ("androidx.navigation:navigation-ui-ktx:2.6.0")
 }

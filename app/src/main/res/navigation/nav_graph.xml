@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/createdpdfFragment">
+
+    <fragment
+        android:id="@+id/createdpdfFragment"
+        android:name="com.tasakiapps.photostopdf.CreatedpdfFragment"
+        android:label="fragment_createdpdf"
+        tools:layout="@layout/fragment_createdpdf" />
+    <fragment
+        android:id="@+id/pdfFragment"
+        android:name="com.tasakiapps.photostopdf.PdfFragment"
+        android:label="fragment_pdf"
+        tools:layout="@layout/fragment_pdf" />
+</navigation>

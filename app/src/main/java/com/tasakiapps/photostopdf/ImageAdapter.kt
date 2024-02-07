@@ -5,15 +5,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tasakiapps.photostopdf.databinding.GridViewItemBinding
 import com.tasakiapps.photostopdf.model.GridViewItem
 
 
-class ImageAdapter(val context:Context,private var list:List<GridViewItem> = listOf()) :RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
-   lateinit var itemClick:(item:GridViewItem) -> Unit
+class ImageAdapter(val context: Context, private var list: List<GridViewItem> = listOf()) :
+    RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
+    lateinit var itemClick: (item: String) -> Unit
+    private val selectedItems = mutableSetOf<String>()
 
+    val counterMap = mutableMapOf<String, Int>()
     override fun onCreateViewHolder(
         parent: ViewGroup, viewType: Int
     ): ViewHolder {
@@ -23,7 +27,7 @@ class ImageAdapter(val context:Context,private var list:List<GridViewItem> = lis
         return ViewHolder(binding)
     }
 
-     fun  setList( imageList:List<GridViewItem>){
+    fun setList(imageList: List<GridViewItem>) {
         list = imageList
     }
 
@@ -31,26 +35,35 @@ class ImageAdapter(val context:Context,private var list:List<GridViewItem> = lis
 
         val itemData = list[position]
         with(holder) {
-
-            Log.d("Photo Item>>> ", "${itemData.title}")
+            Log.d("Photo Item>>> ", "${itemData.path}")
             Glide.with(context).load(itemData.path).placeholder(R.drawable.ic_home_bg)
                 .into(binding.itemImage)
+
+            val counter = counterMap[itemData.path] ?: 0
+
+            binding.tvCount.text = counter.toString()
+
+            if (counter > 0) {
+                binding.tvCount.visibility = View.VISIBLE
+                binding.lConst.setBackgroundResource(R.drawable.red_stroke)
+            } else {
+                binding.tvCount.visibility = View.GONE
+                binding.lConst.setBackgroundResource(0)
+            }
             binding.itemImage.setOnClickListener {
-                if (!itemData.isSelected) {
-                    itemData.isSelected = true
-                    binding.tvCount.visibility = View.VISIBLE
-                    binding.lConst.setBackgroundResource(R.drawable.red_stroke)
-                    itemClick.invoke(itemData)
-                } else {
-                    itemData.isSelected = false
-                    binding.tvCount.visibility = View.GONE
-                    itemClick.invoke(itemData)
-                    binding.lConst.setBackgroundResource(0)
-                }
+                itemClick.invoke(itemData.path)
             }
         }
 
 
+    }
+
+    fun decreaseAllValueOnMap(value: Int) {
+        counterMap.forEach { kv ->
+            if (kv.value > value) {
+                counterMap[kv.key] = counterMap[kv.key]?.minus(1) ?: 0
+            }
+        }
     }
 
     override fun getItemCount(): Int {

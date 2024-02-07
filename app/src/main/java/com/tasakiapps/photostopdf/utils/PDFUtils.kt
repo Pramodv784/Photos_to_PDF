@@ -6,6 +6,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import com.tasakiapps.photostopdf.model.PdfModel
+import java.io.File
 
 object PDFUtils {
 
@@ -48,5 +49,41 @@ object PDFUtils {
         }
 
         return filePath
+    }
+
+    fun getAllPdfFiles(directoryPath: String): ArrayList<PdfModel>? {
+        val directory = File(directoryPath)
+        val pdfList: ArrayList<PdfModel> = ArrayList<PdfModel>()
+        // Check if the directory exists
+        if (!directory.exists() || !directory.isDirectory) {
+            throw IllegalArgumentException("Directory not found: $directoryPath")
+        }
+
+        // List all files in the directory
+        val files = directory.listFiles()
+
+        // Filter PDF files
+        val pdfFiles = files?.filter { it.isFile && it.extension.equals("pdf", ignoreCase = true) }
+        pdfFiles?.forEach{
+            pdfList.add(PdfModel(it.name,it.absolutePath))
+        }
+        return pdfList
+    }
+
+    fun getFileSizeInMB(filePath: String): Double {
+        val file = File(filePath)
+
+        // Check if the file exists
+        if (!file.exists()) {
+            throw IllegalArgumentException("File not found: $filePath")
+        }
+
+        // Get file size in bytes
+        val fileSizeInBytes = file.length()
+
+        // Convert bytes to megabytes
+        val fileSizeInMB = fileSizeInBytes.toDouble() / (1024 * 1024)
+
+        return fileSizeInMB
     }
 }

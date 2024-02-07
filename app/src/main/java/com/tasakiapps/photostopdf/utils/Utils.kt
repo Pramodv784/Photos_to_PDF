@@ -45,41 +45,27 @@ object Utils {
         )
     }
 
-    @WorkerThread
-    fun Context.retrievePhotos(): List<GridViewItem> {
-        val results = mutableListOf<GridViewItem>()
-        val resolver = contentResolver
+     fun getImageDirectories(mContext: Context): ArrayList<String>? {
+        val directories = ArrayList<String>()
+        val contentResolver = mContext.contentResolver
+        val queryUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         val projection = arrayOf(
-            MediaStore.Files.FileColumns._ID,
+            MediaStore.Images.Media.DATA
         )
-
-        val cursor = resolver.query(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-            projection,
-            null,
-            null,
-            MediaStore.Images.Media.DATE_MODIFIED + " DESC"
-        )
-        if (cursor != null) {
-            val idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID)
-            while (cursor.moveToNext()) {
-                val id = cursor.getLong(idColumn)
-
-                val uri = ContentUris.withAppendedId(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                    id
-                )
-                //do whatever you need with the uri
-                //TODO disable check corrupt image for client testing.
-                // Reason: slow load image from gallery
-//            if (uri.size(this) > 0) {
-                results.add(GridViewItem("", File(uri.toString()).path, 0))
-//            }
-            }
+        val includeImages = MediaStore.Images.Media.MIME_TYPE + " LIKE 'image/%' "
+        val excludeGif =
+            " AND " + MediaStore.Images.Media.MIME_TYPE + " != 'image/gif' " + " AND " + MediaStore.Images.Media.MIME_TYPE + " != 'image/giff' "
+        val selection = includeImages + excludeGif
+        val cursor = contentResolver.query(queryUri, projection, selection, null, null)
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                val photoUri = cursor.getString(cursor.getColumnIndex(projection[0]))
+                if (!directories.contains(File(photoUri).parent)) {
+                    directories.add(File(photoUri).parent)
+                }
+            } while (cursor.moveToNext())
         }
-
-        cursor?.close()
-        return results
+        return directories
     }
 
 

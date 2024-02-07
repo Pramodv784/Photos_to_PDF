@@ -12,10 +12,10 @@ import com.tasakiapps.photostopdf.databinding.SelectedItemViewBinding
 import com.tasakiapps.photostopdf.model.GridViewItem
 
 
-class UserSelectImageAdapter(val list: List<GridViewItem>, val context: Context) :
+class UserSelectImageAdapter(val context: Context) :
     RecyclerView.Adapter<UserSelectImageAdapter.ViewHolder>() {
     lateinit var itemClick: (item: GridViewItem) -> Unit
-    lateinit var removeClick: (item: GridViewItem) -> Unit
+    private var photoList: List<GridViewItem> = listOf()
 
     override fun onCreateViewHolder(
         parent: ViewGroup, viewType: Int
@@ -25,32 +25,28 @@ class UserSelectImageAdapter(val list: List<GridViewItem>, val context: Context)
         return ViewHolder(binding)
     }
 
+    fun setList(selectedList: List<GridViewItem>) {
+        photoList = selectedList
+    }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        val itemData = list[position]
+        val itemData = photoList[position]
 
         with(holder) {
             Log.d("Photo Item>>> ", "${itemData.title}")
             Glide.with(context).load(itemData.path).placeholder(R.drawable.ic_home_bg)
                 .into(binding.itemImage)
             binding.itemImage.setOnClickListener {
-                if (!itemData.isSelected) {
-                    itemData.isSelected = true
-                    binding.tvCount.visibility = View.VISIBLE
-                    itemClick.invoke(itemData)
-                } else {
-                    itemData.isSelected = false
-                    binding.tvCount.visibility = View.GONE
-                    removeClick.invoke(itemData)
-                }
+                itemClick.invoke(itemData)
             }
-            binding.tvCount.setOnClickListener { removeClick.invoke(itemData) }
+
         }
 
     }
 
     override fun getItemCount(): Int {
-        return list.size
+        return photoList.size
     }
 
     inner class ViewHolder(val binding: SelectedItemViewBinding) :

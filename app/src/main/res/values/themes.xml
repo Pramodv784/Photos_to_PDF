@@ -16,4 +16,12 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
         <item name="actionMenuTextColor">@color/white</item>
     </style>
+
+    <style name="SpinnerTheme" parent="android:Widget.Material.Spinner.Underlined">
+
+        <item name="android:popupBackground">@drawable/outline_bg
+        </item>
+
+        <item name="android:textAlignment">textStart</item>
+    </style>
 </resources>

@@ -11,7 +11,7 @@ import java.util.*
 
 
 @WorkerThread
-fun Context.RetrivePhoto(directoryPath: String):List<GridViewItem> {
+fun RetrivePhoto(directoryPath: String):List<GridViewItem> {
   //  val filePath = "/storage/emulated/0/Pictures"
 
     val file = File(directoryPath)
@@ -30,6 +30,7 @@ fun Context.RetrivePhoto(directoryPath: String):List<GridViewItem> {
         })
 
         for (file1 in sortedFiles) {
+
                 list.add(GridViewItem(file1.name, file1.path, file1.length()))
         }
     }

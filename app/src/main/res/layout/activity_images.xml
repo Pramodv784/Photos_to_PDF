@@ -19,16 +19,27 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="@dimen/_5sdp"
             android:orientation="horizontal">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="250dp"
+                android:layout_height="@dimen/_30sdp"
+                app:cardCornerRadius="@dimen/_20sdp"
+                android:paddingHorizontal="@dimen/_15sdp"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:elevation="@dimen/_4sdp">
 
             <androidx.appcompat.widget.AppCompatSpinner
                 android:id="@+id/spinner"
-                style="@style/Widget.AppCompat.Spinner.DropDown"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_marginStart="20dp"
+                android:background="@drawable/outline_bg"
+                tools:listitem=""
                 android:padding="0dp" />
+            </androidx.cardview.widget.CardView>
 
             <View
                 android:layout_width="0dp"
@@ -60,6 +71,7 @@
             android:layout_marginEnd="17dp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="3"
+            android:layout_marginTop="@dimen/_10sdp"
             tools:itemCount="50"
             tools:listitem="@layout/grid_view_item" />
     </androidx.appcompat.widget.LinearLayoutCompat>

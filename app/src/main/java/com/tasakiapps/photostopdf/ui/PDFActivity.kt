@@ -41,7 +41,7 @@ class PDFActivity : AppCompatActivity() {
         var tab:TabLayout= binding.tabLayout
 
         binding.tabLayout.setupWithViewPager(binding.viewPager)
-        tab.setupWithNavController(navController)
+       // tab.setupWithNavController(navController)
 
 
         // Customize tabs if needed

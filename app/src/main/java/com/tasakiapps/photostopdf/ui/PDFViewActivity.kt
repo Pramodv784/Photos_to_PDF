@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.tasakiapps.photostopdf.BuildConfig
+import com.tasakiapps.photostopdf.MainActivity
 import com.tasakiapps.photostopdf.R
 import com.tasakiapps.photostopdf.databinding.ActivityPdfviewBinding
 import java.io.File
@@ -16,6 +17,7 @@ import java.io.File
 
 class PDFViewActivity : AppCompatActivity() {
     private lateinit var binding:ActivityPdfviewBinding
+    var destinationHome:Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pdfview)
@@ -33,9 +35,20 @@ class PDFViewActivity : AppCompatActivity() {
 
     private fun initViews() {
         var pdf_uri = intent.getStringExtra("pdf_path")
+        supportActionBar?.title = "My Activity title"
+        try {
+             destinationHome = intent.getBooleanExtra("destination_home",false)
+        }
+        catch (e:Exception)
+        {
+            e.printStackTrace()
+        }
+
 
         Log.d("PDF URL>>>>>","$pdf_uri")
         binding.pdfViewer.fromFile(pdf_uri!!).show()
+
+        binding.back.setOnClickListener { onBackPressed() }
 
         binding.ivShare.setOnClickListener {
 
@@ -61,5 +74,13 @@ class PDFViewActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+     if(destinationHome){
+         startActivity(Intent(this@PDFViewActivity,MainActivity::class.java))
+         finish()
+     }
     }
 }

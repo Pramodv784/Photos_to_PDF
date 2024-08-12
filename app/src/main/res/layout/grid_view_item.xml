@@ -12,7 +12,6 @@
         android:id="@+id/l_const"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="@dimen/_4sdp"
         tools:background="@drawable/red_stroke">
 
         <com.google.android.material.card.MaterialCardView

@@ -1,59 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_margin="@dimen/_10sdp"
+    android:layout_margin="@dimen/_5sdp"
     android:padding="@dimen/_5sdp"
-    app:cardCornerRadius="@dimen/_20sdp"
+    app:cardCornerRadius="@dimen/_10sdp"
     android:layout_height="wrap_content">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/_10sdp"
+        android:layout_marginHorizontal="@dimen/_3sdp"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_100sdp"
+            android:layout_height="@dimen/_80sdp"
             android:id="@+id/iv_pdf"
-            android:src="@drawable/ic_home_bg"/>
+            android:src="@drawable/icon_pdf"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="text"
             android:id="@+id/tv_file"
             android:textAlignment="center"
+            android:fontFamily="@font/urbanist_medium"
+            android:textFontWeight="700"
             android:padding="@dimen/_5sdp"
-            android:textSize="@dimen/_18sdp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="@dimen/_12sdp"
             android:textColor="@color/red"/>
+
+        <View
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="2dp"
+            android:layout_gravity="center"
+            android:background="@color/red"/>
 
 
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginHorizontal="@dimen/_10sdp"
             android:orientation="horizontal">
+            
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="@dimen/_15sdp"
+                    android:layout_height="@dimen/_15sdp"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:src="@drawable/ic_size"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="55kb"
+                    android:id="@+id/tv_size"
+                    android:layout_gravity="center"
+                    android:gravity="start"
+                    android:fontFamily="@font/urbanist_medium"
+                    android:textFontWeight="500"
+                    android:textSize="@dimen/_8sdp"
+                    android:textColor="#838383"/>
+                
+            </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
+
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="55kb"
-                android:layout_weight="1"
-                android:id="@+id/tv_size"
-                android:gravity="start"
-                android:padding="@dimen/_5sdp"
-                android:textSize="@dimen/_12sdp"
-                android:textColor="@color/black"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="55kb"
-                android:layout_weight="1"
+
                 android:gravity="end"
-                android:padding="@dimen/_5sdp"
-                android:textSize="@dimen/_12sdp"
-                android:textColor="@color/black"/>
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="@dimen/_15sdp"
+                    android:layout_height="@dimen/_15sdp"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:src="@drawable/ic_calender"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="25/05/2023"
+                    android:id="@+id/tv_date"
+                    android:layout_gravity="center"
+                    android:gravity="start"
+                    android:fontFamily="@font/urbanist_medium"
+                    android:textFontWeight="500"
+                    android:textSize="@dimen/_8sdp"
+                    android:textColor="#838383"/>
+
+            </LinearLayout>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.appcompat.widget.LinearLayoutCompat>

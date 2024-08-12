@@ -14,27 +14,30 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.tasakiapps.photostopdf.databinding.ActivityMainBinding
 import com.tasakiapps.photostopdf.extension.changeStatusBarColor
 import com.tasakiapps.photostopdf.ui.PDFActivity
+import com.tasakiapps.photostopdf.ui.SettingActivity
 import com.tasakiapps.photostopdf.utils.CustomDialog.showAlert
 
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding:ActivityMainBinding
+
+    private val requestPermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            // do something
+        }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         initViews()
         setContentView(binding.root)
-
-
-
-
     }
 
     private fun initViews() {
@@ -50,7 +53,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
         binding.btFile.setOnClickListener {
-            startActivity(Intent(this@MainActivity,PDFActivity::class.java))
+            if (!checkPermission()) {
+                requestPermission()
+            } else {
+                startActivity(Intent(this@MainActivity, PDFActivity::class.java))
+            }
+        }
+        binding.ivSetting.setOnClickListener {
+            startActivity(Intent(this@MainActivity,SettingActivity::class.java))
         }
     }
 
@@ -67,9 +77,15 @@ class MainActivity : AppCompatActivity() {
                 //below android 11=======
                 //   startActivity(Intent(this, ActivityPicture::class.java))
                 ActivityCompat.requestPermissions(this, arrayOf<String>(WRITE_EXTERNAL_STORAGE), 100)
+
             }
         }
     }
+
+
+
+
+
     private fun checkPermission(): Boolean {
         return if (SDK_INT >= Build.VERSION_CODES.R) {
             Environment.isExternalStorageManager()

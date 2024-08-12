@@ -1,5 +1,6 @@
 package com.tasakiapps.photostopdf.utils
 
+import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
@@ -10,6 +11,7 @@ import java.io.File
 
 object PDFUtils {
 
+    @SuppressLint("Range")
     fun getExternalPDFFileList(context: Context): ArrayList<PdfModel>? {
         val cr = context.contentResolver
         val uri = MediaStore.Files.getContentUri("external")
@@ -29,7 +31,7 @@ object PDFUtils {
             val fileId = cursor.getLong(columnIndex)
             val fileUri = Uri.parse("$uri/$fileId")
             val displayName = cursor.getString(cursor.getColumnIndex(projection[1]))
-            uriList.add(PdfModel(displayName, getPdfPathFromUri(context, fileUri)!!))
+            uriList.add(PdfModel("displayName", getPdfPathFromUri(context, fileUri)!!))
             cursor.moveToNext()
         }
         cursor.close()

@@ -10,6 +10,7 @@ import com.tasakiapps.photostopdf.model.GridViewItem
 import com.tasakiapps.photostopdf.model.PdfModel
 import com.tasakiapps.photostopdf.ui.PDFViewActivity
 import com.tasakiapps.photostopdf.utils.GetThumbnail
+import com.tasakiapps.photostopdf.utils.ImageUtil
 import com.tasakiapps.photostopdf.utils.PDFUtils.getFileSizeInMB
 import com.tasakiapps.photostopdf.utils.Utils
 import java.io.File
@@ -33,14 +34,17 @@ class PDFAdapter(val list: List<PdfModel>, val context: Context) :
         with(holder) {
 
 
-            binding.tvFile.text = itemData.fileName
+            val fileInfo = ImageUtil.getFileInfo(itemData.uri)
+            binding.tvFile.text = fileInfo.fileName
+            binding.tvSize.text = fileInfo.fileSize.toString()
+            binding.tvDate.text = fileInfo.lastModified.toString()
            /* if (!GetThumbnail.isPdfPasswordProtected(itemData.uri)) {
                 binding.ivPdf.setImageBitmap(
                     GetThumbnail.generateThumbnailFromPdf(context, File(itemData.uri))
                 )
             }*/
 
-            binding.tvSize.text = getFileSizeInMB(itemData.uri).toString()
+          //  binding.tvSize.text = getFileSizeInMB(itemData.uri).toString()
 
             binding.root.setOnClickListener {
                 context.startActivity(

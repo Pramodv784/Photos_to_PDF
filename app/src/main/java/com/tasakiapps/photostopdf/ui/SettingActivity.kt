@@ -13,6 +13,6 @@ class SettingActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        this.changeStatusBarColor(R.color.color_background)
+
     }
 }

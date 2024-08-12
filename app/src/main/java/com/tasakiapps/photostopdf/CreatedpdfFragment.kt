@@ -16,22 +16,41 @@ import com.tasakiapps.photostopdf.utils.PDFUtils.getExternalPDFFileList
 
 class CreatedpdfFragment : Fragment() {
     private lateinit var binding:FragmentCreatedpdfBinding
-    var viewStatus =true
+    private  var viewStatus:Boolean = false
+
+    companion object {
+
+        /**
+         * Method used to get the instance of the fragment.
+         *
+         * @return fragment instance
+         */
+        @JvmStatic
+        fun getInstance(state: Boolean): CreatedpdfFragment {
+            val fragment = CreatedpdfFragment()
+            val bundle = Bundle()
+            bundle.putBoolean("viewState", state)
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentCreatedpdfBinding.inflate(layoutInflater)
-       var  viewStatus = arguments?.getBoolean("Key")
-        Log.d("view status>>>","$viewStatus")
-
         initView()
         return binding.root
     }
 
 
     private fun initView() {
+        if(arguments!=null){
+            viewStatus = arguments?.getBoolean("viewState")?:false
+        }
+
+        Log.d("view status>>>","$viewStatus")
         if(viewStatus){
             binding.rvPdf.adapter = getAllPdfFiles("${Environment.getExternalStorageDirectory()}"+"/PDFFiles/")
                 ?.let { PDFAdapter(it, requireContext()) }

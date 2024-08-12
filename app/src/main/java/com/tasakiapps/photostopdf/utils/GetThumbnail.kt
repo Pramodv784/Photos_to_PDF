@@ -6,7 +6,7 @@ import android.graphics.pdf.PdfRenderer
 import android.media.ThumbnailUtils
 import android.os.ParcelFileDescriptor
 import android.provider.MediaStore
-import com.itextpdf.text.pdf.PdfReader
+
 import java.io.File
 import java.io.IOException
 
@@ -32,14 +32,5 @@ object GetThumbnail {
         return thumbnailBitmap
     }
 
-    fun isPdfPasswordProtected(filePath: String): Boolean {
-        try {
-            val pdfReader = PdfReader(filePath)
-            return pdfReader.isEncrypted
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return false
-        }
-    }
 
 }

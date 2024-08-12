@@ -3,36 +3,33 @@ package com.tasakiapps.photostopdf
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tasakiapps.photostopdf.adaptor.DropDownAdapter
 import com.tasakiapps.photostopdf.adaptor.UserSelectImageAdapter
 import com.tasakiapps.photostopdf.databinding.ActivityImagesBinding
-import com.tasakiapps.photostopdf.extension.RetrivePhoto
 import com.tasakiapps.photostopdf.extension.changeStatusBarColor
 import com.tasakiapps.photostopdf.model.GridViewItem
 import com.tasakiapps.photostopdf.ui.PDFViewActivity
+import com.tasakiapps.photostopdf.ui.SelectedImageActivity
 import com.tasakiapps.photostopdf.utils.ImageToPDF
+import com.tasakiapps.photostopdf.utils.Keys.IMAGE_LIST
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
+import java.io.Serializable
 
 
 class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     private lateinit var binding: ActivityImagesBinding
     val directories = ArrayList<String>()
-    private var selectedImages = ArrayList<GridViewItem>()
     private lateinit var imageAdaptor: ImageAdapter
     private lateinit var viewModel: ImageViewModel
     private lateinit var bottomAdaptor: UserSelectImageAdapter
@@ -57,12 +54,18 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
            dropDownAdapter = DropDownAdapter(this,listFolder.toMutableList())
 
+
+
+        /*    val spinnerAdaptor = ArrayAdapter(this@ImagesActivity,android.R.layout.simple_spinner_item,listFolder.toMutableList())
+
+            spinnerAdaptor.setDropDownViewResource(R.layout.item_spinner)*/
+
+
+
             binding.spinner.adapter = dropDownAdapter
         }
 
         viewModel.photoLiveData.observe(this) {
-
-
             imageAdaptor.setList(it.second)
             binding.rv.adapter = imageAdaptor
             imageAdaptor.notifyItemChanged(0)
@@ -71,12 +74,16 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         viewModel.photoSelectionLiveData.observe(this) {
 
             if (it.second.isNotEmpty()) {
+                Log.d("selected list ","${it.second.size}")
                 bottomAdaptor.setList(it.second.toMutableList())
                 binding.llBottom.visibility = View.VISIBLE
                 binding.rvSelected.adapter = bottomAdaptor
                 binding.tvSelectedCount.text = "Selected: ${it.second.size}"
+                bottomAdaptor.notifyDataSetChanged()
                 if (it.first) {
                     it.second.lastOrNull().let { photo ->
+
+                        Log.d("Selected Item>>",photo?.path.toString())
                         imageAdaptor.counterMap[photo?.path.toString()] =
                             imageAdaptor.counterMap.maxOfOrNull { it.value }?.plus(1) ?: 1
 
@@ -108,9 +115,9 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             onPhotoItemClicked(it)
         }
         binding.pdfBT.setOnClickListener {
-            binding.progress.visibility = View.VISIBLE
-            if (selectedImages.isNotEmpty()) {
-                val imagePaths = ArrayList<String>()
+           // binding.progress.visibility = View.VISIBLE
+            if (viewModel.photoSelectionLiveData.value?.second?.isNotEmpty() == true) {
+        /*        val imagePaths = ArrayList<String>()
                 val converter = ImageToPDF(this)
 
                 selectedImages.forEach {
@@ -138,7 +145,13 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                         })
                         finish()
                     }
-                }
+                }*/
+                var bundle = Bundle()
+                bundle.putSerializable("bundle",viewModel.photoSelectionLiveData.value?.second as Serializable)
+                startActivity(Intent(this@ImagesActivity,
+                    SelectedImageActivity::class.java)
+                    .putExtras(bundle))
+
 
             }
         }
@@ -150,10 +163,12 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         if (mapValue > 0) {
             imageAdaptor.decreaseAllValueOnMap(mapValue)
             imageAdaptor.counterMap[tag] = 0
+
             viewModel.onPhotoRemoved(photo)
         } else {
-            viewModel.onPhotoSelected(photo, 10)
+            viewModel.onPhotoSelected(photo, 20)
         }
+        imageAdaptor.notifyDataSetChanged()
 
 
     }

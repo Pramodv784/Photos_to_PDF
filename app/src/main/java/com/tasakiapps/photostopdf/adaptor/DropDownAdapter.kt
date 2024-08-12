@@ -14,10 +14,10 @@ class DropDownAdapter(val context: Context,var folderList: List<String> = listOf
    BaseAdapter() {
 
 
-    fun getCustomView(position: Int, convertView: View?, parent: ViewGroup?): View? {
+    private fun getCustomView(position: Int, convertView: View?, parent: ViewGroup?): View? {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val row: View = inflater.inflate(R.layout.item_spinner, parent, false)
-        val label = row.findViewById<TextView>(R.id.txt) as TextView
+        val label = row.findViewById<TextView>(R.id.text_view_item) as TextView
         label.text = folderList[position]
 
         return row

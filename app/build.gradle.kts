@@ -36,7 +36,9 @@ android {
     buildFeatures {
       viewBinding = true
     }
+
 }
+
 
 dependencies {
     implementation("androidx.core:core-ktx:1.10.0")
@@ -48,7 +50,6 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    implementation ("com.itextpdf:itextpdf:5.5.13.3")
     implementation ("com.dmitryborodin:pdfview-android:1.1.0")
     implementation ("androidx.navigation:navigation-fragment-ktx:2.6.0")
     implementation ("androidx.navigation:navigation-ui-ktx:2.6.0")
@@ -59,5 +60,14 @@ dependencies {
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
     implementation ("androidx.navigation:navigation-ui-ktx:2.3.5")
     implementation ("androidx.navigation:navigation-fragment-ktx:2.3.5")
+    implementation ("com.google.code.gson:gson:2.8.6")
+
+
+    implementation ("com.itextpdf:itext7-core:8.0.3")
+
+
+
+
+
 
 }

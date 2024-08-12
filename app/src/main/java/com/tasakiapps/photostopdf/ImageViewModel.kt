@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tasakiapps.photostopdf.model.GridViewItem
 import com.tasakiapps.photostopdf.repo.GalleryRepository
+import com.tasakiapps.photostopdf.utils.ImageUtil.removeIfCompat
 import kotlinx.coroutines.launch
 
 class ImageViewModel() :ViewModel() {
@@ -61,7 +62,7 @@ class ImageViewModel() :ViewModel() {
         }
     }
     fun onPhotoRemoved(photo: GridViewItem) {
-        listOfPhotoSelection.removeIf{photo.path == it.path}
+        listOfPhotoSelection.removeIfCompat{photo.path == it.path}
         photoSelectionLiveData.value = Pair(false, listOfPhotoSelection.toMutableList())
     }
 }

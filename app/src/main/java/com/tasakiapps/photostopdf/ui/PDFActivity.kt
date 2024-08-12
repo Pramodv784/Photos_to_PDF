@@ -10,10 +10,13 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.tabs.TabLayout
+import com.tasakiapps.photostopdf.CreatedpdfFragment
 import com.tasakiapps.photostopdf.R
 import com.tasakiapps.photostopdf.adaptor.CustomPagerAdapter
+import com.tasakiapps.photostopdf.adaptor.ViewPagerAdapter
 import com.tasakiapps.photostopdf.databinding.ActivityPdfactivityBinding
 import com.tasakiapps.photostopdf.extension.changeStatusBarColor
+import com.tasakiapps.photostopdf.utils.ImageUtil
 
 
 class PDFActivity : AppCompatActivity() {
@@ -29,97 +32,20 @@ class PDFActivity : AppCompatActivity() {
 
     private fun initViews() {
         this.changeStatusBarColor(R.color.color_background)
-
-
-        val navHostFragment = supportFragmentManager
-            .findFragmentById(R.id.nav_host_fragment_activity_bottem_navigation) as NavHostFragment?
-         navController = navHostFragment!!.navController
-
-        val tabTitles = listOf("Tab 1", "Tab 2", "Tab 3")
-        val customPagerAdapter = CustomPagerAdapter(this, tabTitles)
-        binding.viewPager.adapter = customPagerAdapter
-        var tab:TabLayout= binding.tabLayout
-
-        binding.tabLayout.setupWithViewPager(binding.viewPager)
-        tab.setupWithNavController(navController)
-
-
-        // Customize tabs if needed
-        for (i in 0 until   binding.tabLayout.tabCount) {
-            val tab =   binding.tabLayout.getTabAt(i)
-            tab?.customView = customPagerAdapter.instantiateItem(  binding.tabLayout, i) as View
-        }
-
+        binding.back.setOnClickListener { onBackPressed() }
 
         appBarConfiguration = AppBarConfiguration(setOf(R.id.createdpdfFragment,
             R.id.pdfFragment))
-       // NavigationUI.setupWithNavController(appBarConfiguration,navController)
 
-      //  binding.rvPdf.adapter = PDFAdapter(list?.reversed()!!, this@PDFActivity)
-           var bundle = Bundle()
+        val adapter = ViewPagerAdapter(supportFragmentManager)
+        adapter.addFragment(CreatedpdfFragment.getInstance(true), "PDF Converted")
+        adapter.addFragment(CreatedpdfFragment.getInstance(false), "PDF Reader")
 
-     /*   binding.tvPdfConverted.setOnClickListener {
-            bundle.putBoolean("Key",true) /// Converted PDF
-            navController.navigate(R.id.createdpdfFragment,bundle)
-            changeBackground(true, binding.tvPdfConverted, binding.tvPdfReader)
 
-        }
-        binding.tvPdfReader.setOnClickListener {
-            bundle.putBoolean("Key",false) // All the PDF files
-            navController.navigate(R.id.createdpdfFragment,bundle)
-            changeBackground(false, binding.tvPdfConverted, binding.tvPdfReader)
-        }
-*/
+        binding.viewPager.adapter = adapter
+
+        binding.tabLayout2.setupWithViewPager(binding.viewPager)
+
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        return NavigationUI.navigateUp(navController,appBarConfiguration)
-    }
-    fun changeBackground(
-        isBackGround: Boolean, firstView: AppCompatTextView, secondView: AppCompatTextView
-    ) {
-        if (isBackGround) {
-            firstView.apply {
-                this.backgroundTintList = ColorStateList.valueOf(
-                    ContextCompat.getColor(
-                        this@PDFActivity, R.color.color_text_red
-                    )
-                );
-                setTextColor(ContextCompat.getColor(this@PDFActivity, R.color.white))
-
-                secondView.apply {
-                    backgroundTintList = ColorStateList.valueOf(
-                        ContextCompat.getColor(
-                            this@PDFActivity, R.color.color_grey
-                        )
-                    )
-                    setTextColor(ContextCompat.getColor(this@PDFActivity, R.color.color_text_grey))
-
-                }
-
-
-            }
-        } else {
-            secondView.apply {
-                this.backgroundTintList = ColorStateList.valueOf(
-                    ContextCompat.getColor(
-                        this@PDFActivity, R.color.color_text_red
-                    )
-                );
-                setTextColor(ContextCompat.getColor(this@PDFActivity, R.color.white))
-
-                firstView.apply {
-                    backgroundTintList = ColorStateList.valueOf(
-                        ContextCompat.getColor(
-                            this@PDFActivity, R.color.color_grey
-                        )
-                    )
-                    setTextColor(ContextCompat.getColor(this@PDFActivity, R.color.color_text_grey))
-
-                }
-
-
-            }
-        }
-    }
 }

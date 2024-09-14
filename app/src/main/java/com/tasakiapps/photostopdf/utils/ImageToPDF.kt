@@ -11,7 +11,10 @@ import android.os.Environment
 import android.text.style.BackgroundColorSpan
 import android.widget.Toast
 import com.itextpdf.io.image.ImageDataFactory
+import com.itextpdf.kernel.colors.ColorConstants
+import com.itextpdf.kernel.geom.PageSize
 import com.itextpdf.kernel.pdf.PdfWriter
+import com.itextpdf.kernel.pdf.canvas.PdfCanvas
 import com.itextpdf.kernel.pdf.colorspace.PdfColorSpace
 import com.itextpdf.layout.Document
 import com.itextpdf.layout.element.Image
@@ -177,7 +180,11 @@ class ImageToPDF(private val context: Context) {
         }
 
 
+
+
     }
+
+
 
 
     fun createPdfWithMultipleImages(
@@ -186,7 +193,7 @@ class ImageToPDF(private val context: Context) {
         quality: Int,
         isOrientation: String
     ) {
-        pdfCallback.invoke(false,"")
+        pdfCallback.invoke(false, "")
 
         val directory = File(Environment.getExternalStorageDirectory(), "PDFFiles")
         if (!directory.exists()) {
@@ -199,49 +206,38 @@ class ImageToPDF(private val context: Context) {
         // Create a FileOutputStream for the PDF file
         val fileOutputStream = FileOutputStream(pdfFile)
 
-
         val pdfDoc = com.itextpdf.kernel.pdf.PdfDocument(PdfWriter(fileOutputStream))
         val doc = Document(
             pdfDoc,
 
         )
 
-
-        doc.setMargins(50f, 50f, 50f, 50f) // Example: 50f for all margins
         for (imagePath in imagePaths) {
-
-            val compressedImageBytes = compressImage(imagePath, quality) // Set compression quality as needed
+            val compressedImageBytes = compressImage(imagePath, quality)
 
             // Create an Image instance from the image path
             val img = Image(ImageDataFactory.create(compressedImageBytes))
 
             // Calculate aspect ratio
             val aspectRatio = img.imageWidth.toFloat() / img.imageHeight.toFloat()
+            img.setPadding(5.toFloat())
 
 
             if(isOrientation.equals("Vertical")){
-                img.setWidth(UnitValue.createPointValue(img.imageHeight.toFloat())) // Swap width and height for portrait
-                img.setHeight(UnitValue.createPointValue(img.imageWidth.toFloat()))
+                doc.pdfDocument.defaultPageSize =PageSize.A4
             }
             else if(isOrientation.equals("Horizontal")){
-                img.setWidth(UnitValue.createPointValue(img.imageWidth.toFloat()))
-                img.setHeight(UnitValue.createPointValue(img.imageHeight.toFloat()))
+                doc.pdfDocument.defaultPageSize =PageSize.A4.rotate()
             }
-            else{
-                if (aspectRatio > 1) { // Landscape image
-                    img.setWidth(UnitValue.createPointValue(img.imageWidth.toFloat()))
-                    img.setHeight(UnitValue.createPointValue(img.imageHeight.toFloat()))
-                } else { // Portrait image
-                    img.setWidth(UnitValue.createPointValue(img.imageHeight.toFloat())) // Swap width and height for portrait
-                    img.setHeight(UnitValue.createPointValue(img.imageWidth.toFloat()))
-                }
-            }
-
-            // Adjust image size for landscape orientation if needed
-
-
-            // Center align image horizontally
-            img.setHorizontalAlignment(HorizontalAlignment.CENTER)
+//            else{
+//                if (aspectRatio > 1) { // Landscape image
+//                    img.setWidth(UnitValue.createPointValue(img.imageWidth.toFloat()))
+//                    img.setHeight(UnitValue.createPointValue(img.imageHeight.toFloat()))
+//                } else { // Portrait image
+//                    img.setWidth(UnitValue.createPointValue(img.imageHeight.toFloat())) // Swap width and height for portrait
+//                    img.setHeight(UnitValue.createPointValue(img.imageWidth.toFloat()))
+//                }
+//            }
 
             // Add a new page to the document
 

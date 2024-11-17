@@ -1,34 +1,28 @@
 package com.tasakiapps.photostopdf.adaptor
 
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class ViewPagerAdapter(supportFragmentManager: FragmentManager) :
-    FragmentStatePagerAdapter(supportFragmentManager) {
+class ViewPagerAdapter(
+    fragmentActivity: FragmentActivity
+) : FragmentStateAdapter(fragmentActivity) {
 
-    // declare arrayList to contain fragments and its title
-    private val mFragmentList = ArrayList<Fragment>()
-    private val mFragmentTitleList = ArrayList<String>()
+    private val fragmentList = mutableListOf<Fragment>()
+    private val fragmentTitleList = mutableListOf<String>()
 
-    override fun getItem(position: Int): Fragment {
-        // return a particular fragment page
-        return mFragmentList[position]
-    }
-
-    override fun getCount(): Int {
-        // return the number of tabs
-        return mFragmentList.size
-    }
-
-    override fun getPageTitle(position: Int): CharSequence{
-        // return title of the tab
-        return mFragmentTitleList[position]
-    }
-
+    // Adds fragments to the adapter
     fun addFragment(fragment: Fragment, title: String) {
-        // add each fragment and its title to the array list
-        mFragmentList.add(fragment)
-        mFragmentTitleList.add(title)
+        fragmentList.add(fragment)
+        fragmentTitleList.add(title)
     }
+
+    override fun getItemCount(): Int = fragmentList.size
+
+    override fun createFragment(position: Int): Fragment = fragmentList[position]
+
+    // Helper function to get page title
+    fun getPageTitle(position: Int): String = fragmentTitleList[position]
 }

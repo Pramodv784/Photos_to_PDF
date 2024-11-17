@@ -1,6 +1,7 @@
 package com.tasakiapps.photostopdf
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,13 +24,35 @@ class ImageViewModel() :ViewModel() {
     val photoSelectionLiveData = SingleLiveEvent<Pair<Boolean, List<GridViewItem>>>()
 
     val errorLimitPhotoSelection = SingleLiveEvent<Boolean>()
+
+
+
+    fun getAllImages(context:Context){
+        photoList.removeAll { it is GridViewItem }
+        viewModelScope.launch {
+            runCatching {
+                repository.provideAllImages(context)
+            }.fold({
+                it.let {
+                  //  photoList.addAll(it)
+                 //   photoLiveData.value =  Pair(false, photoList)
+
+                    Log.d("TAG", "getAllImages: "+it.toString())
+                }
+            },
+                {
+                   // photoLiveData.value =  Pair(false, photoList)
+                })
+        }
+    }
     fun retiveDirectory(context: Context){
          folderList.removeAll{it is String}
         viewModelScope.launch {
             runCatching {
                 repository.provideDirectory(context)
             }.fold({
-               it.let {
+               it.let { it ->
+                   folderList.add("All Images")
                    folderList.addAll(it!!)
                    folderLiveData.value = Pair(false,folderList)
                }

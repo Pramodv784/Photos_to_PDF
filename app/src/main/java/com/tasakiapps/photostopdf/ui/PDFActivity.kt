@@ -13,10 +13,12 @@ import com.google.android.material.tabs.TabLayout
 import com.tasakiapps.photostopdf.CreatedpdfFragment
 import com.tasakiapps.photostopdf.R
 import com.tasakiapps.photostopdf.adaptor.CustomPagerAdapter
-import com.tasakiapps.photostopdf.adaptor.ViewPagerAdapter
+
 import com.tasakiapps.photostopdf.databinding.ActivityPdfactivityBinding
 import com.tasakiapps.photostopdf.extension.changeStatusBarColor
 import com.tasakiapps.photostopdf.utils.ImageUtil
+import com.google.android.material.tabs.TabLayoutMediator
+import com.tasakiapps.photostopdf.adaptor.ViewPagerAdapter
 
 
 class PDFActivity : AppCompatActivity() {
@@ -37,14 +39,16 @@ class PDFActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(setOf(R.id.createdpdfFragment,
             R.id.pdfFragment))
 
-        val adapter = ViewPagerAdapter(supportFragmentManager)
+        val adapter = ViewPagerAdapter(this)
         adapter.addFragment(CreatedpdfFragment.getInstance(true), "PDF Converted")
         adapter.addFragment(CreatedpdfFragment.getInstance(false), "PDF Reader")
 
 
         binding.viewPager.adapter = adapter
 
-        binding.tabLayout2.setupWithViewPager(binding.viewPager)
+        TabLayoutMediator(binding.tabLayout2, binding.viewPager) { tab, position ->
+            tab.text = adapter.getPageTitle(position)
+        }.attach()
 
     }
 

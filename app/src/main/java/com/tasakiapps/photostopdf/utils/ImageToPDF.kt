@@ -17,7 +17,9 @@ import com.itextpdf.kernel.pdf.PdfWriter
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas
 import com.itextpdf.kernel.pdf.colorspace.PdfColorSpace
 import com.itextpdf.layout.Document
+import com.itextpdf.layout.element.AreaBreak
 import com.itextpdf.layout.element.Image
+import com.itextpdf.layout.element.Paragraph
 import com.itextpdf.layout.properties.Background
 import com.itextpdf.layout.properties.HorizontalAlignment
 import com.itextpdf.layout.properties.UnitValue
@@ -251,6 +253,83 @@ class ImageToPDF(private val context: Context) {
 
         doc.close()
     }
+
+    fun createPdfWithMultipleImages2(
+        imagePaths: List<String>,
+        dest: String,
+        quality: Int,
+        isOrientation: String,
+        password:String
+    ) {
+        try {
+            val directory = File(Environment.getExternalStorageDirectory(), "PDFFiles")
+            if (!directory.exists()) {
+                directory.mkdirs()
+            }
+
+            // Create the PDF file
+            val pdfFile = File(directory, dest)
+
+//            val writer = com.itextpdf.kernel.pdf.PdfWriter(pdfFile).apply {
+//                setStandardEncryption(
+//                    userPassword.toByteArray(),
+//                    ownerPassword.toByteArray(),
+//                    com.itextpdf.kernel.pdf.PdfWriter.ALLOW_PRINTING,
+//                    com.itextpdf.kernel.pdf.encryption.StandardEncryption128
+//                )
+//            }
+
+            // Create a FileOutputStream for the PDF file
+            val pdfDoc = com.itextpdf.kernel.pdf.PdfDocument(PdfWriter(pdfFile))
+            val doc = Document(pdfDoc)
+
+            // Set page size based on orientation
+            val pageSize = if (isOrientation.equals("Vertical", true)) PageSize.A4 else PageSize.A4.rotate()
+            pdfDoc.defaultPageSize = pageSize
+
+            // Iterate through images and add them to the PDF
+            for ((index, imagePath) in imagePaths.withIndex()) {
+                val compressedImageBytes = compressImage(imagePath, quality)
+                val img = Image(ImageDataFactory.create(compressedImageBytes))
+
+                // Set margins around the image
+                img.setMargins(10f, 10f, 10f, 10f)
+
+                // Scale the image to fit within the page while maintaining the aspect ratio
+                val availableWidth = pageSize.width - doc.leftMargin - doc.rightMargin
+                val availableHeight = pageSize.height - doc.topMargin - doc.bottomMargin
+
+                img.scaleToFit(availableWidth, availableHeight)
+
+//                // Center the image on the page
+//                val xOffset = (availableWidth - img.imageScaledWidth) / 2
+//                val yOffset = (availableHeight - img.imageScaledHeight) / 2
+//
+//                img.setFixedPosition(doc.leftMargin + xOffset, doc.bottomMargin + yOffset)
+
+                // Add the image to the document
+                doc.add(img)
+
+                // Add a page number at the bottom
+                val pageNumber = Paragraph("Page ${index + 1}")
+                    .setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)
+                    .setFontSize(10f)
+                doc.add(pageNumber)
+
+                // Add a new page if not the last image
+                if (index != imagePaths.lastIndex) {
+                    doc.add(AreaBreak())
+                }
+            }
+
+            doc.close()
+            pdfCallback.invoke(true, dest)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            pdfCallback.invoke(false, e.message ?: "Error creating PDF")
+        }
+    }
+
 
 
     fun compressImage(imagePath: String, quality: Int): ByteArray {

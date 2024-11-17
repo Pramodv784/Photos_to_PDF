@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.tasakiapps.photostopdf.adaptor.DropDownAdapter
@@ -51,6 +52,8 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                 val folderName = it.split("/").last()
                 listFolder.add(folderName)
             }
+            Log.e("Pramod", "observer: "+listFolder.toString() )
+          //  listFolder.sortedWith(  compareBy(String.CASE_INSENSITIVE_ORDER,{it}))
 
            dropDownAdapter = DropDownAdapter(this,listFolder.toMutableList())
 
@@ -102,6 +105,8 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         imageAdaptor = ImageAdapter(this)
         bottomAdaptor = UserSelectImageAdapter(this)
 
+      //  viewModel.getAllImages(this)
+
         viewModel.retiveDirectory(this)
         imageAdaptor.itemClick = { path ->
             viewModel.photoList.firstOrNull() { it is GridViewItem && it.path.equals(path) }
@@ -115,37 +120,8 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             onPhotoItemClicked(it)
         }
         binding.pdfBT.setOnClickListener {
-           // binding.progress.visibility = View.VISIBLE
-            if (viewModel.photoSelectionLiveData.value?.second?.isNotEmpty() == true) {
-        /*        val imagePaths = ArrayList<String>()
-                val converter = ImageToPDF(this)
 
-                selectedImages.forEach {
-                    imagePaths.add(it.path)
-                }
-                CoroutineScope(Dispatchers.IO).launch {
-                    Log.d("PDF File Name Time>>>", "${System.currentTimeMillis()}")
-                    converter.convertImagesToPdf(
-                        this@ImagesActivity, imagePaths,
-                        "File${System.currentTimeMillis()}.pdf"
-                    )
-                }
-                converter.pdfCallback = { status, fileName ->
-                    if (status) {
-                        Log.d("PDF File Name >>>", "${fileName}")
-                        var pdfPath = "${Environment.getExternalStorageDirectory()}" +
-                                "/PDFFiles/${fileName}"
-                        startActivity(Intent(
-                            this@ImagesActivity,
-                            PDFViewActivity::class.java
-                        ).apply {
-                            putExtra(
-                                "pdf_path", pdfPath
-                            )
-                        })
-                        finish()
-                    }
-                }*/
+            if (viewModel.photoSelectionLiveData.value?.second?.isNotEmpty() == true) {
                 var bundle = Bundle()
                 bundle.putSerializable("bundle",viewModel.photoSelectionLiveData.value?.second as Serializable)
                 startActivity(Intent(this@ImagesActivity,
@@ -153,6 +129,9 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                     .putExtras(bundle))
 
 
+            }
+            else{
+                Toast.makeText(this,"Please Select Image",Toast.LENGTH_SHORT).show()
             }
         }
     }

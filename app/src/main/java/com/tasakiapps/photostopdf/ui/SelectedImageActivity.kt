@@ -53,7 +53,7 @@ class SelectedImageActivity : AppCompatActivity() {
     val REQUEST_IMAGE_CAPTURE = 1
     var image_uri: Uri? = null
     private var fileName = ""
-    private var isOrientation = ""
+    private var isOrientation = "Vertical"
 
 
 
@@ -282,7 +282,7 @@ class SelectedImageActivity : AppCompatActivity() {
         dialogBinding.convertBT.setOnClickListener {
 
             fileName = dialogBinding.etFileName.text.toString()
-            generatePDF(fileName, imageQuality,builder)
+            generatePDF(fileName, imageQuality,builder, dialogBinding.etPassword.text.toString())
             Log.d("File Name>>>", "$fileName")
         }
 
@@ -291,7 +291,7 @@ class SelectedImageActivity : AppCompatActivity() {
         builder.show()
     }
 
-    private fun generatePDF(fileName: String, quality: Int, builder: AlertDialog) {
+    private fun generatePDF(fileName: String, quality: Int, builder: AlertDialog,password:String) {
         showProgressDialog(this@SelectedImageActivity, "Generating PDF...")
         val imagePaths = ArrayList<String>()
 
@@ -301,9 +301,9 @@ class SelectedImageActivity : AppCompatActivity() {
         val converter = ImageToPDF(this)
         CoroutineScope(Dispatchers.IO).launch {
             Log.d("PDF File Name Time>>>", "${System.currentTimeMillis()}")
-            converter.createPdfWithMultipleImages(
+            converter.createPdfWithMultipleImages2(
                 imagePaths,
-                "$fileName.pdf",quality, isOrientation
+                "$fileName.pdf",quality, isOrientation,password
             )
         }
         converter.pdfCallback = { status, fileName ->

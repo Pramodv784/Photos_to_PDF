@@ -37,6 +37,7 @@ android {
       viewBinding = true
     }
 
+
 }
 
 
@@ -64,6 +65,10 @@ dependencies {
 
 
     implementation ("com.itextpdf:itext7-core:8.0.3")
+    //implementation (files("libs/itext5-itextpdf-5.5.11.jar"))
+//    implementation ("com.github.librepdf:openpdf:2.0.3") {
+//        exclude (group= "com.google.code.findbugs", module = "jsr305")
+//    }
 
 
 

@@ -53,7 +53,7 @@ object PDFUtils {
         return filePath
     }
 
-    fun getAllPdfFiles(directoryPath: String): ArrayList<PdfModel>? {
+    fun getAllPdfFiles(directoryPath: String): ArrayList<PdfModel> {
         val directory = File(directoryPath)
         val pdfList: ArrayList<PdfModel> = ArrayList<PdfModel>()
         // Check if the directory exists

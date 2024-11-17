@@ -9,14 +9,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.tasakiapps.photostopdf.adaptor.PDFAdapter
 import com.tasakiapps.photostopdf.databinding.FragmentCreatedpdfBinding
 import com.tasakiapps.photostopdf.utils.PDFUtils.getAllPdfFiles
 import com.tasakiapps.photostopdf.utils.PDFUtils.getExternalPDFFileList
+import com.tasakiapps.photostopdf.viewmodel.PDFViewModel
+import kotlinx.coroutines.CoroutineScope
 
 class CreatedpdfFragment : Fragment() {
     private lateinit var binding:FragmentCreatedpdfBinding
     private  var viewStatus:Boolean = false
+    private lateinit var viewmodel:PDFViewModel
 
     companion object {
 
@@ -40,8 +44,16 @@ class CreatedpdfFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentCreatedpdfBinding.inflate(layoutInflater)
+        viewmodel = ViewModelProvider(this).get(PDFViewModel::class.java)
         initView()
+        observer()
         return binding.root
+    }
+
+    private fun observer() {
+        viewmodel._pdfCreateList.observe(viewLifecycleOwner){
+          binding.rvPdf.adapter = PDFAdapter(it,requireContext())
+        }
     }
 
 
@@ -49,19 +61,13 @@ class CreatedpdfFragment : Fragment() {
         if(arguments!=null){
             viewStatus = arguments?.getBoolean("viewState")?:false
         }
-
         Log.d("view status>>>","$viewStatus")
         if(viewStatus){
-            binding.rvPdf.adapter = getAllPdfFiles("${Environment.getExternalStorageDirectory()}"+"/PDFFiles/")
-                ?.let { PDFAdapter(it, requireContext()) }
+            viewmodel.getPDFCreated()
         }
         else{
-            binding.rvPdf.adapter = PDFAdapter(getExternalPDFFileList(requireContext())!!
-                , requireContext())
+            viewmodel.getAllPDFFile(requireContext())
         }
-
-
-
     }
 
 

@@ -76,6 +76,7 @@
                 android:button="?android:attr/listChoiceIndicatorSingle"
                 android:layout_gravity="center_vertical"
                 android:text="Medium"
+                android:checked="true"
                 android:buttonTint="@color/red"
                 android:layout_weight="1"
                 android:textSize="16sp"

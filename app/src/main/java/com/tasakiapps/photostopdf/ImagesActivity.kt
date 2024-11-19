@@ -56,7 +56,13 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
           //  listFolder.sortedWith(  compareBy(String.CASE_INSENSITIVE_ORDER,{it}))
 
            dropDownAdapter = DropDownAdapter(this,listFolder.toMutableList())
-
+            viewModel.loading.observe(this) {
+                if (it) {
+                    binding.lpiLoading.show()
+                } else {
+                    binding.lpiLoading.hide()
+                }
+            }
 
 
         /*    val spinnerAdaptor = ArrayAdapter(this@ImagesActivity,android.R.layout.simple_spinner_item,listFolder.toMutableList())
@@ -104,6 +110,8 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         binding.spinner.onItemSelectedListener = this
         imageAdaptor = ImageAdapter(this)
         bottomAdaptor = UserSelectImageAdapter(this)
+
+        viewModel.getAllImages(this)
 
       //  viewModel.getAllImages(this)
 
@@ -154,7 +162,7 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-        viewModel.retrivePhoto(directories[p2])
+        viewModel.retrivePhoto(directories[p2],this)
     }
 
     override fun onNothingSelected(p0: AdapterView<*>?) {

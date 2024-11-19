@@ -35,7 +35,9 @@ import com.tasakiapps.photostopdf.databinding.ConvertDialogBinding
 import com.tasakiapps.photostopdf.databinding.OrientationViewBinding
 import com.tasakiapps.photostopdf.model.GridViewItem
 import com.tasakiapps.photostopdf.utils.ImageToPDF
+import com.tasakiapps.photostopdf.utils.ImageUtil
 import com.tasakiapps.photostopdf.utils.ImageUtil.convertUrlToPath
+import com.tasakiapps.photostopdf.utils.Utils
 import com.tasakiapps.photostopdf.utils.Utils.dismissProgressDialog
 import com.tasakiapps.photostopdf.utils.Utils.showProgressDialog
 import kotlinx.coroutines.CoroutineScope
@@ -54,6 +56,7 @@ class SelectedImageActivity : AppCompatActivity() {
     var image_uri: Uri? = null
     private var fileName = ""
     private var isOrientation = "Vertical"
+    var selectedOption =""
 
 
 
@@ -216,7 +219,7 @@ class SelectedImageActivity : AppCompatActivity() {
 
 
    private fun orientationDialog(){
-       var selectedOption =""
+
        val builder = AlertDialog.Builder(this, R.style.CustomAlertDialog)
            .create()
        val dialogBinding = OrientationViewBinding.inflate(layoutInflater)
@@ -226,20 +229,30 @@ class SelectedImageActivity : AppCompatActivity() {
             selectedOption = radioButton.text.toString()
          //  Toast.makeText(this, "Selected option: $selectedOption", Toast.LENGTH_SHORT).show()
 
-
+            radioButton.isChecked= true
            Log.d("Radio Button >>","${radioButton.text}")
        }
+
+       if(isOrientation == "Horizontal"){
+           dialogBinding.rdHorizontal.isChecked = true
+       }
+       else{
+           dialogBinding.rdPortrait.isChecked = true
+       }
+
        dialogBinding.apply.setOnClickListener {
          builder.dismiss()
-           if(selectedOption.equals("Horizontal")){
+           if(selectedOption == "Horizontal"){
                isOrientation = "Horizontal"
                val layoutManager = GridLayoutManager(this, 2)
                binding.rv.layoutManager = layoutManager
                adaptor.changeToLandscape(true)
+               dialogBinding.rdHorizontal.isChecked = true
            }
            else{
                adaptor.changeToLandscape(false)
                isOrientation = "Vertical"
+               dialogBinding.rdPortrait.isChecked = true
                val layoutManager = GridLayoutManager(this, 3)
                binding.rv.layoutManager = layoutManager
            }
@@ -282,6 +295,7 @@ class SelectedImageActivity : AppCompatActivity() {
         dialogBinding.convertBT.setOnClickListener {
 
             fileName = dialogBinding.etFileName.text.toString()
+            builder.dismiss()
             generatePDF(fileName, imageQuality,builder, dialogBinding.etPassword.text.toString())
             Log.d("File Name>>>", "$fileName")
         }
@@ -296,14 +310,17 @@ class SelectedImageActivity : AppCompatActivity() {
         val imagePaths = ArrayList<String>()
 
         seletedImageList.forEach {
-            imagePaths.add(it.path)
+            val filePath = ImageUtil.getRealPathFromURI(this, Uri.parse(it.path))
+            if (filePath != null) {
+                imagePaths.add(filePath)
+            }
         }
         val converter = ImageToPDF(this)
         CoroutineScope(Dispatchers.IO).launch {
             Log.d("PDF File Name Time>>>", "${System.currentTimeMillis()}")
-            converter.createPdfWithMultipleImages2(
+            converter.createPdfWithMultipleImages34(
                 imagePaths,
-                "$fileName.pdf",quality, isOrientation,password
+                "$fileName.pdf",quality, isOrientation
             )
         }
         converter.pdfCallback = { status, fileName ->

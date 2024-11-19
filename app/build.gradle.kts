@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id ("kotlin-parcelize")
 }
 
 android {
@@ -15,6 +16,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -29,12 +31,16 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+
     }
     kotlinOptions {
         jvmTarget = "1.8"
     }
     buildFeatures {
       viewBinding = true
+    }
+    packagingOptions {
+        exclude("META-INF/*.kotlin_module")
     }
 
 
@@ -64,11 +70,14 @@ dependencies {
     implementation ("com.google.code.gson:gson:2.8.6")
 
 
-    implementation ("com.itextpdf:itext7-core:8.0.3")
+    //implementation ("com.itextpdf:itext7-core:8.0.3")
     //implementation (files("libs/itext5-itextpdf-5.5.11.jar"))
-//    implementation ("com.github.librepdf:openpdf:2.0.3") {
-//        exclude (group= "com.google.code.findbugs", module = "jsr305")
-//    }
+    implementation ("com.github.librepdf:openpdf:1.3.25") {
+        exclude (group= "com.google.code.findbugs", module = "jsr305")
+        exclude (group= "org.apache.commons", module= "commons-collections4")
+    }
+    implementation ("ro.andob.androidawt:androidawt:1.0.4")
+
 
 
 

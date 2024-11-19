@@ -58,7 +58,8 @@ object PDFUtils {
         val pdfList: ArrayList<PdfModel> = ArrayList<PdfModel>()
         // Check if the directory exists
         if (!directory.exists() || !directory.isDirectory) {
-            throw IllegalArgumentException("Directory not found: $directoryPath")
+           // throw IllegalArgumentException("Directory not found: $directoryPath")
+            return pdfList
         }
 
         // List all files in the directory

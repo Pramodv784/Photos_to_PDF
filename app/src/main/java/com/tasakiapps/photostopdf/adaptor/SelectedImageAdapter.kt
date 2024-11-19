@@ -1,5 +1,6 @@
 package com.tasakiapps.photostopdf.adaptor
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.PixelFormat
 import android.util.Log
@@ -10,6 +11,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.tasakiapps.photostopdf.R
 import com.tasakiapps.photostopdf.databinding.GridViewItemBinding
 import com.tasakiapps.photostopdf.databinding.SelectedImageViewBinding
@@ -39,14 +41,18 @@ class SelectedImageAdapter(val context: Context, private var list: List<GridView
         notifyDataSetChanged()
     }
 
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val itemData = list[position]
         with(holder) {
-            Log.d("Photo Bitmap>>> ", "${itemData.filebitmap}")
-          /*  Glide.with(context).load(itemData.path).placeholder(R.drawable.ic_home_bg)
-                .into(binding.itemImage)*/
-         binding.itemImage.setImageBitmap(itemData.filebitmap)
+            Log.d("Photo Bitmap>>> ", "${itemData}")
+            binding.countText.text = ""+(position+1)
+            Glide.with(context).load(itemData.path).placeholder(R.drawable.ic_home_bg)
+                .into(binding.itemImage)
+       //  binding.itemImage.setImageBitmap(itemData.filebitmap)
+
+
 
 
 

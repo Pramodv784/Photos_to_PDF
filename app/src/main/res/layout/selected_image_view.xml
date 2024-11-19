@@ -4,16 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_parent"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/_150sdp"
+    android:layout_height="@dimen/_170sdp"
     android:layout_margin="@dimen/_5sdp"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/itemImage"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/_150sdp"
         android:background="@color/white"
         tools:srcCompat="@drawable/ic_home_bg" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:id="@+id/count_text"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_12sdp"
+       />
 
 
 </LinearLayout>

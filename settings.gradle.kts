@@ -13,6 +13,10 @@ dependencyResolutionManagement {
         maven {
             url = uri("https://jitpack.io")
         }
+        maven {
+            url =uri("http://maven.andob.info/repository/open_source")
+            isAllowInsecureProtocol = true
+        }
     }
 
 

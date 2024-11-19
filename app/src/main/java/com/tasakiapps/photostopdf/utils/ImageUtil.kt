@@ -1,9 +1,12 @@
 package com.tasakiapps.photostopdf.utils
 
 import android.content.ContentResolver
+import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
+import android.provider.DocumentsContract
 import android.provider.MediaStore
 import com.tasakiapps.photostopdf.model.FileInfo
 import java.io.File
@@ -103,5 +106,29 @@ object ImageUtil {
             removed
         }
     }
+
+
+    fun getRealPathFromURI(context: Context, contentUri: Uri): String? {
+        try {
+            val cursor = context.contentResolver.query(contentUri, null, null, null, null)
+            if (cursor == null) {
+                return contentUri.path
+            } else {
+                if (cursor != null && cursor.count > 0 && cursor.moveToFirst()) {
+                    val index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
+                    val realPath = cursor.getString(index)
+                    cursor.close()
+                    return realPath
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+
+        return PathUtils.getPath(context, contentUri)
+    }
+
+
 
 }

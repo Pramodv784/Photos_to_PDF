@@ -56,6 +56,14 @@ object Utils {
         )
     }
 
+    fun getUriFromFile(context: Context, file: File): Uri {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+        } else {
+            Uri.fromFile(file)
+        }
+    }
+
      fun getImageDirectories(mContext: Context): ArrayList<String>? {
         val directories = ArrayList<String>()
         val contentResolver = mContext.contentResolver

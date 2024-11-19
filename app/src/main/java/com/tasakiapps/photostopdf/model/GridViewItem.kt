@@ -4,19 +4,21 @@ import android.graphics.Bitmap
 import android.os.Parcelable
 import androidx.recyclerview.widget.DiffUtil
 import com.tasakiapps.photostopdf.utils.Utils
+import kotlinx.android.parcel.Parcelize
 import java.io.Serializable
-
+@Parcelize
 data class GridViewItem(
     val title:String,
     val path:String,
     val size:Long?,
     var isSelected:Boolean = false,
     var bitmap: Bitmap?  =null,
-):Serializable{
+
+): Parcelable{
 
 
-    var filebitmap  = bitmap
-        get() = fileToBitmap()
+//    var filebitmap  = bitmap
+//        get() = fileToBitmap()
 
 
 

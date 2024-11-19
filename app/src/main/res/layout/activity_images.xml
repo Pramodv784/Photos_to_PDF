@@ -76,6 +76,17 @@
             android:layout_marginTop="@dimen/_10sdp"
             tools:itemCount="50"
             tools:listitem="@layout/grid_view_item" />
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/lpi_loading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:progress="70"
+            app:indicatorColor="@color/red"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.LinearLayoutCompat

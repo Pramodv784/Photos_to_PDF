@@ -1,5 +1,6 @@
 package com.tasakiapps.photostopdf.extension
 
+import android.content.ContentUris
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -8,13 +9,14 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.WorkerThread
 import com.tasakiapps.photostopdf.model.GridViewItem
+import com.tasakiapps.photostopdf.utils.Utils
 import java.io.File
 import java.io.FileFilter
 import java.util.*
 
 
 @WorkerThread
-fun RetrivePhoto(directoryPath: String):List<GridViewItem> {
+fun RetrivePhoto(context: Context,directoryPath: String):List<GridViewItem> {
   //  val filePath = "/storage/emulated/0/Pictures"
 
     val file = File(directoryPath)
@@ -34,7 +36,10 @@ fun RetrivePhoto(directoryPath: String):List<GridViewItem> {
 
         for (file1 in sortedFiles) {
 
-                list.add(GridViewItem(file1.name, file1.path, file1.length()))
+            val uri = Utils.getUriFromFile(context,file1)
+
+
+                list.add(GridViewItem(file1.name, uri.toString(), file1.length()))
         }
     }
     Log.d("Photo list>>> ","${list.size}")
@@ -42,50 +47,47 @@ fun RetrivePhoto(directoryPath: String):List<GridViewItem> {
 
 }
 
+
+
 @WorkerThread
-fun RetriveAllImages(context: Context): List<GridViewItem> {
-    val imageList = mutableListOf<GridViewItem>()
+fun Context.retrievePhotos(): List<GridViewItem> {
+    val results = mutableListOf<GridViewItem>()
+    val resolver = contentResolver
     val projection = arrayOf(
-        MediaStore.Images.Media._ID,
-        MediaStore.Images.Media.DISPLAY_NAME,
-        MediaStore.Images.Media.DATA,
-        MediaStore.Images.Media.SIZE
+        MediaStore.Files.FileColumns._ID,
     )
 
-    val cursor = context.contentResolver.query(
+    val cursor = resolver.query(
         MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
         projection,
         null,
         null,
-        null
+        MediaStore.Images.Media.DATE_MODIFIED + " DESC"
     )
-
-    cursor?.use {
-        val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
-        val titleColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
-        val pathColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-        val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE)
-
+    if (cursor != null) {
+        val idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID)
         while (cursor.moveToNext()) {
             val id = cursor.getLong(idColumn)
-            val title = cursor.getString(titleColumn)
-            val path = cursor.getString(pathColumn)
-            val size = cursor.getLong(sizeColumn)
 
-            // Load the bitmap (consider adding size limits for large files)
-            val bitmap: Bitmap? = BitmapFactory.decodeFile(path)
-
-            // Create a GridViewItem and add it to the list
-            val item = GridViewItem(
-                title = title,
-                path = path,
-                size = size,
-                bitmap = bitmap
+            val uri = ContentUris.withAppendedId(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                id
             )
-            imageList.add(item)
+            //do whatever you need with the uri
+            //TODO disable check corrupt image for client testing.
+            // Reason: slow load image from gallery
+//            if (uri.size(this) > 0) {
+             //  val filePath = Utils.getPdfPathFromUri(this,uri)
+          //  val file = File(filePath)
+          // Log.e("TAG", "FilePath1URi: "+filePath)
+            results.add(GridViewItem("",uri.toString(),0))
+
+
+//            }
         }
     }
 
-    return imageList
+    cursor?.close()
+    return results
 }
 

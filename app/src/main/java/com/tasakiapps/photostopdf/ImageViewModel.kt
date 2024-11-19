@@ -24,24 +24,27 @@ class ImageViewModel() :ViewModel() {
     val photoSelectionLiveData = SingleLiveEvent<Pair<Boolean, List<GridViewItem>>>()
 
     val errorLimitPhotoSelection = SingleLiveEvent<Boolean>()
-
+    val loading = SingleLiveEvent<Boolean>()
 
 
     fun getAllImages(context:Context){
+        loading.value = true
         photoList.removeAll { it is GridViewItem }
         viewModelScope.launch {
             runCatching {
                 repository.provideAllImages(context)
             }.fold({
+                loading.value = false
                 it.let {
-                  //  photoList.addAll(it)
-                 //   photoLiveData.value =  Pair(false, photoList)
+                    photoList.addAll(it)
+                    photoLiveData.value =  Pair(false, photoList)
 
                     Log.d("TAG", "getAllImages: "+it.toString())
                 }
             },
                 {
-                   // photoLiveData.value =  Pair(false, photoList)
+                    loading.value = false
+                    photoLiveData.value =  Pair(false, photoList)
                 })
         }
     }
@@ -63,11 +66,14 @@ class ImageViewModel() :ViewModel() {
 
         }
     }
-   fun retrivePhoto(folderName:String){
+   fun retrivePhoto(folderName:String,context: Context){
+       if(folderName == "All Images"){
+           getAllImages(context)
+       }
        photoList.removeAll { it is GridViewItem }
        viewModelScope.launch {
            runCatching {
-             repository.provideGalleryPhotoList(folderName)
+             repository.provideGalleryPhotoList(context,folderName)
            }.fold({
               photoList.addAll(it)
                photoLiveData.value = Pair(false, photoList)

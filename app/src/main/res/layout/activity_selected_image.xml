@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/color_grey"
+    android:background="@color/background_color"
     tools:context=".ui.SelectedImageActivity">
 
 
@@ -17,11 +17,15 @@
         android:orientation="vertical">
 
 
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/_4sdp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_10sdp"
-            android:layout_marginVertical="@dimen/_10sdp">
+            android:layout_marginHorizontal="@dimen/_5sdp"
+            android:layout_marginVertical="@dimen/_5sdp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -29,7 +33,7 @@
                 android:text="Preview"
                 android:layout_weight="1"
                 android:layout_gravity="center"
-                android:textSize="@dimen/_18sdp"
+                android:textSize="@dimen/_16sdp"
                 android:textColor="@color/red"
                 android:textStyle="bold"/>
 
@@ -40,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
 
-                android:layout_marginEnd="17dp"
+
                 android:backgroundTint="@color/color_text_red"
                 android:drawableEnd="@drawable/ic_forward_white"
                 android:fontFamily="@font/urbanist_semibold"
@@ -49,6 +53,7 @@
                 android:textSize="18sp" />
 
         </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
 
 

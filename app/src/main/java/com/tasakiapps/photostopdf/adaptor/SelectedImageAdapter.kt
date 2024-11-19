@@ -20,9 +20,9 @@ import com.tasakiapps.photostopdf.utils.Utils
 import java.util.Collections
 
 
-class SelectedImageAdapter(val context: Context, private var list: List<GridViewItem> = listOf()) :
-    RecyclerView.Adapter<SelectedImageAdapter.ViewHolder>(),
-    DragItemTouchHelper.ItemTouchHelperAdapter {
+class SelectedImageAdapter(val context: Context, private var list: List<GridViewItem> = listOf()
+,  private val onItemMovedCallback: (List<GridViewItem>) -> Unit) :
+    RecyclerView.Adapter<SelectedImageAdapter.ViewHolder>(), ItemTouchHelperAdapter{
     lateinit var itemClick: (item: String) -> Unit
     private val selectedItems = mutableSetOf<String>()
     private var llparent:LinearLayout?=null
@@ -56,24 +56,14 @@ class SelectedImageAdapter(val context: Context, private var list: List<GridView
 
 
 
+
+
             binding.itemImage.setOnClickListener { binding.itemImage}
         }
 
 
     }
-    override fun onItemMove(fromPosition: Int, toPosition: Int) {
-        // Handle item movement in your data set here
-        if (fromPosition < toPosition) {
-            for (i in fromPosition until toPosition) {
-                Collections.swap(list, i, i + 1)
-            }
-        } else {
-            for (i in fromPosition downTo toPosition + 1) {
-                Collections.swap(list, i, i - 1)
-            }
-        }
-        notifyItemMoved(fromPosition, toPosition)
-    }
+
 
     public fun changeToLandscape(status:Boolean){
         if(status){
@@ -101,4 +91,15 @@ class SelectedImageAdapter(val context: Context, private var list: List<GridView
         }
 
     }
+
+    override fun onItemMoved(fromPosition: Int, toPosition: Int) {
+        Collections.swap(list, fromPosition, toPosition)
+        notifyItemMoved(fromPosition, toPosition)
+
+        onItemMovedCallback(list)
+    }
+
+}
+interface ItemTouchHelperAdapter {
+    fun onItemMoved(fromPosition: Int, toPosition: Int)
 }

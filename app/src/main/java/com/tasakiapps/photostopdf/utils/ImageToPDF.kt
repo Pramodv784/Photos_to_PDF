@@ -5,17 +5,21 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.pdf.PdfDocument
+import android.media.ExifInterface
 import android.os.Environment
 import android.text.style.BackgroundColorSpan
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.lowagie.text.Document
 
 import com.lowagie.text.Font
 import com.lowagie.text.Image
 import com.lowagie.text.PageSize
 import com.lowagie.text.Paragraph
+import com.lowagie.text.Rectangle
 import com.lowagie.text.pdf.PdfWriter
 import com.tasakiapps.photostopdf.R
 
@@ -24,6 +28,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+
 class ImageToPDF(private val context: Context) {
 
     lateinit var pdfCallback:(Boolean, String) -> Unit
@@ -402,6 +407,138 @@ class ImageToPDF(private val context: Context) {
         }
     }
 
+    fun createPdfWithMultipleImages(
+        imagePaths: List<String>,
+        dest: String,
+        quality: Int,
+        isOrientation: String,
+        context: Context
+    ) {
+        try {
+            val directory = File(Environment.getExternalStorageDirectory(), "PDFFiles")
+            if (!directory.exists()) {
+                directory.mkdirs()
+            }
+
+            // Create the PDF file
+            val pdfFile = File(directory, dest)
+
+            // Initialize PdfDocument
+            val pdfDocument = PdfDocument()
+
+            // Page size (adjust based on orientation)
+            val pageWidth = if (isOrientation.equals("Vertical", true)) 595 else 842
+            val pageHeight = if (isOrientation.equals("Vertical", true)) 842 else 595
+
+
+            // Get colors
+            val greyColor = ContextCompat.getColor(context, R.color.color_grey)
+            val whiteColor = ContextCompat.getColor(context, android.R.color.white)
+
+            for ((index, imagePath) in imagePaths.withIndex()) {
+                val imgFile = File(imagePath)
+                var imgBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
+
+                // Handle image rotation using EXIF metadata
+                val exif = ExifInterface(imgFile.absolutePath)
+                val orientation = exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL
+                )
+                imgBitmap = when (orientation) {
+                    ExifInterface.ORIENTATION_ROTATE_90 -> rotateBitmap(imgBitmap, 90f)
+                    ExifInterface.ORIENTATION_ROTATE_180 -> rotateBitmap(imgBitmap, 180f)
+                    ExifInterface.ORIENTATION_ROTATE_270 -> rotateBitmap(imgBitmap, 270f)
+                    else -> imgBitmap
+                }
+
+                // Compress the bitmap using the quality parameter
+                val outputStream = ByteArrayOutputStream()
+                imgBitmap.compress(Bitmap.CompressFormat.JPEG, quality,outputStream)
+                val compressedBitmap = BitmapFactory.decodeByteArray(outputStream.toByteArray(), 0, outputStream.size())
+
+                // Create a new page
+                val pageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, index + 1).create()
+                val page = pdfDocument.startPage(pageInfo)
+                val canvas = page.canvas
+
+                // Draw grey background
+                val backgroundPaint = Paint()
+                backgroundPaint.color = greyColor
+                canvas.drawRect(0f, 0f, pageWidth.toFloat(), pageHeight.toFloat(), backgroundPaint)
+
+                // Define white container dimensions
+                val containerMargin = 50f // Adjust margin as needed
+                val containerLeft = containerMargin
+                val containerTop = containerMargin
+                val containerRight = pageWidth - containerMargin
+                val containerBottom = pageHeight - containerMargin
+
+                // Draw white container
+                val containerPaint = Paint()
+                containerPaint.color = whiteColor
+                canvas.drawRect(containerLeft, containerTop, containerRight, containerBottom, containerPaint)
+
+                // Scale and center the image inside the white container
+                val containerWidth = containerRight - containerLeft
+                val containerHeight = containerBottom - containerTop
+                val imageAspectRatio = compressedBitmap.width.toFloat() / compressedBitmap.height.toFloat()
+                val containerAspectRatio = containerWidth / containerHeight
+
+                val finalImageWidth: Int
+                val finalImageHeight: Int
+                if (imageAspectRatio > containerAspectRatio) {
+                    // Image is wider relative to the container
+                    finalImageWidth = containerWidth.toInt()
+                    finalImageHeight = (containerWidth / imageAspectRatio).toInt()
+                } else {
+                    // Image is taller relative to the container
+                    finalImageHeight = containerHeight.toInt()
+                    finalImageWidth = (containerHeight * imageAspectRatio).toInt()
+                }
+
+                val scaledBitmap = Bitmap.createScaledBitmap(
+                    compressedBitmap,
+                    finalImageWidth,
+                    finalImageHeight,
+                    true
+                )
+
+                // Center the image in the white container
+                val xPos = containerLeft + (containerWidth - scaledBitmap.width) / 2f
+                val yPos = containerTop + (containerHeight - scaledBitmap.height) / 2f
+                canvas.drawBitmap(scaledBitmap, xPos, yPos, null)
+
+                // Finish the page
+                pdfDocument.finishPage(page)
+            }
+
+            // Write the document to file
+            pdfDocument.writeTo(FileOutputStream(pdfFile))
+
+            // Close the document
+            pdfDocument.close()
+
+            // Notify success
+            pdfCallback.invoke(true, dest)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            // Notify failure
+            pdfCallback.invoke(false, e.message ?: "Error creating PDF")
+        }
+    }
+
+
+
+
+
+    // Function to rotate a bitmap
+    fun rotateBitmap(source: Bitmap, angle: Float): Bitmap {
+        val matrix = Matrix()
+        matrix.postRotate(angle)
+        return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
+    }
 
 
 

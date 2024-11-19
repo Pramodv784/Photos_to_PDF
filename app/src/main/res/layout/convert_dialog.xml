@@ -18,6 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Convert Setting"
+            android:fontFamily="@font/urbanist_semibold"
             android:layout_gravity="center"
             android:textSize="@dimen/_20sdp"
             android:textColor="@color/red"/>
@@ -27,14 +28,16 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:id="@+id/etFileName"
+            android:fontFamily="@font/urbanist_semibold"
             android:layout_marginTop="@dimen/_10sdp"
-            android:hint="File Name"/>
+            android:hint="File's name"/>
 
         <androidx.appcompat.widget.AppCompatEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:id="@+id/etPassword"
+            android:visibility="gone"
             android:layout_marginTop="@dimen/_10sdp"
             android:hint="Password"/>
 
@@ -43,6 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Image Quality"
+            android:fontFamily="@font/urbanist_semibold"
             android:layout_gravity="start"
             android:layout_marginTop="@dimen/_10sdp"
             android:textSize="@dimen/_15sdp"
@@ -63,6 +67,7 @@
                 app:buttonTint="@color/red"
                 android:layout_gravity="center_vertical"
                 android:text="Low"
+                android:fontFamily="@font/urbanist_semibold"
 
                 android:layout_weight="1"
                 android:textSize="16sp"
@@ -76,6 +81,7 @@
                 android:button="?android:attr/listChoiceIndicatorSingle"
                 android:layout_gravity="center_vertical"
                 android:text="Medium"
+                android:fontFamily="@font/urbanist_semibold"
                 android:checked="true"
                 app:buttonTint="@color/red"
                 android:layout_weight="1"
@@ -90,6 +96,7 @@
                 android:button="?android:attr/listChoiceIndicatorSingle"
                 android:layout_gravity="center_vertical"
                 app:buttonTint="@color/red"
+                android:fontFamily="@font/urbanist_semibold"
                 android:text="High"
                 android:layout_weight="1"
                 android:textSize="16sp"

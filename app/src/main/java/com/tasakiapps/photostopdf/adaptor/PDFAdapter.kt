@@ -38,11 +38,11 @@ class PDFAdapter(val list: List<PdfModel>, val context: Context) :
             binding.tvFile.text = fileInfo.fileName
             binding.tvSize.text = fileInfo.fileSize.toString()
             binding.tvDate.text = fileInfo.lastModified.toString()
-           /* if (!GetThumbnail.isPdfPasswordProtected(itemData.uri)) {
-                binding.ivPdf.setImageBitmap(
-                    GetThumbnail.generateThumbnailFromPdf(context, File(itemData.uri))
-                )
-            }*/
+//            if (!GetThumbnail.isPdfPasswordProtected(itemData.uri)) {
+//                binding.ivPdf.setImageBitmap(
+//                    GetThumbnail.generateThumbnailFromPdf(context, File(itemData.uri))
+//                )
+//            }
 
           //  binding.tvSize.text = getFileSizeInMB(itemData.uri).toString()
 

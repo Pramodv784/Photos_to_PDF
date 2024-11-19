@@ -5,5 +5,6 @@ import android.net.Uri
 
 data class PdfModel(
      var fileName:String,
-     var uri:String
+     var uri:String,
+
 )

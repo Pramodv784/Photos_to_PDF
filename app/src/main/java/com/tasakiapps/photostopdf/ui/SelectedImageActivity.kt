@@ -26,9 +26,9 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.tasakiapps.photostopdf.ImageViewModel
 import com.tasakiapps.photostopdf.R
-import com.tasakiapps.photostopdf.adaptor.DragItemTouchHelper
 import com.tasakiapps.photostopdf.adaptor.SelectedImageAdapter
 import com.tasakiapps.photostopdf.databinding.ActivitySelectedImageBinding
 import com.tasakiapps.photostopdf.databinding.ConvertDialogBinding
@@ -45,6 +45,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.FileDescriptor
 import java.io.IOException
+import java.util.Collections
 
 
 class SelectedImageActivity : AppCompatActivity() {
@@ -112,14 +113,48 @@ class SelectedImageActivity : AppCompatActivity() {
         Log.d("Selected ImageSize>>>>", "${seletedImageList.size}")
 
         adaptor = SelectedImageAdapter(this)
+        {updatedList ->
+            // Update the main list with new positions
+          adaptor.setList(updatedList)
+            adaptor.notifyDataSetChanged()
+
+
+        }
+
         adaptor.setList(seletedImageList)
+        adaptor.notifyDataSetChanged()
         binding.rv.adapter = adaptor
 
+        // Set up ItemTouchHelper for drag-and-drop functionality
+        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
+            override fun getMovementFlags(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder
+            ): Int {
+                // Enable drag only (no swipe)
+                return makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT, 0)
+            }
 
-        val dragItemTouchHelper = DragItemTouchHelper(adaptor,this,binding.rv)
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                val fromPosition = viewHolder.adapterPosition
+                val toPosition = target.adapterPosition
+                adaptor.onItemMoved(fromPosition, toPosition)
+                return true
+            }
 
-        val itemTouchHelper = ItemTouchHelper(dragItemTouchHelper)
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                // No swipe action needed
+            }
+        })
+
         itemTouchHelper.attachToRecyclerView(binding.rv)
+
+
+
 
         binding.Ivcamera.setOnClickListener {
             if (isCameraPermissionGranted()) {
@@ -318,9 +353,9 @@ class SelectedImageActivity : AppCompatActivity() {
         val converter = ImageToPDF(this)
         CoroutineScope(Dispatchers.IO).launch {
             Log.d("PDF File Name Time>>>", "${System.currentTimeMillis()}")
-            converter.createPdfWithMultipleImages34(
+            converter.createPdfWithMultipleImages(
                 imagePaths,
-                "$fileName.pdf",quality, isOrientation
+                "$fileName.pdf",quality, isOrientation,applicationContext
             )
         }
         converter.pdfCallback = { status, fileName ->
@@ -328,7 +363,7 @@ class SelectedImageActivity : AppCompatActivity() {
             if (status) {
                 dismissProgressDialog()
                 Log.d("PDF File Name >>>", "${fileName}")
-                var pdfPath = "${Environment.getExternalStorageDirectory()}" +
+                val pdfPath = "${Environment.getExternalStorageDirectory()}" +
                         "/PDFFiles/${fileName}"
                 startActivity(Intent(
                     this@SelectedImageActivity,

@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:text="Orientation"
         android:layout_gravity="center"
+        android:fontFamily="@font/urbanist_semibold"
         android:textColor="@color/red"
         android:textStyle="bold"
         android:textSize="@dimen/_15sdp"/>
@@ -34,6 +35,7 @@
             app:buttonTint="@color/red"
             android:layout_gravity="center_vertical"
             android:text="Portrait"
+            android:fontFamily="@font/urbanist_semibold"
             android:checked="true"
             android:layout_weight="1"
             android:textSize="16sp"
@@ -47,6 +49,7 @@
             android:button="?android:attr/listChoiceIndicatorSingle"
             android:layout_gravity="center_vertical"
             android:text="Horizontal"
+            android:fontFamily="@font/urbanist_semibold"
             app:buttonTint="@color/red"
             android:layout_weight="1"
             android:textSize="16sp"

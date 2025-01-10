@@ -17,6 +17,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.RadioButton
+import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -45,6 +46,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.FileDescriptor
 import java.io.IOException
+import java.io.Serializable
 import java.util.Collections
 
 
@@ -65,7 +67,7 @@ class SelectedImageActivity : AppCompatActivity() {
     private var galleryActivityResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult(), ActivityResultCallback {
-                if (it.getResultCode() === RESULT_OK) {
+                if (it.resultCode === RESULT_OK) {
                     var galleryImage = it.data?.data
                     val gallerImagePath = convertUrlToPath(this, galleryImage!!)
                     Log.d("Gallery Image>>>", "$gallerImagePath")
@@ -112,14 +114,23 @@ class SelectedImageActivity : AppCompatActivity() {
 
         Log.d("Selected ImageSize>>>>", "${seletedImageList.size}")
 
-        adaptor = SelectedImageAdapter(this)
+        adaptor = SelectedImageAdapter(this,onItemMovedCallback=
         {updatedList ->
             // Update the main list with new positions
           adaptor.setList(updatedList)
             adaptor.notifyDataSetChanged()
 
 
-        }
+        }, itemClick = { position->
+            val bundle = Bundle()
+            bundle.putSerializable("bundle",seletedImageList as Serializable)
+            startActivity(Intent(this@SelectedImageActivity,
+                ImageFullViewActivity::class.java)
+
+                .putExtras(bundle).putExtra("position",position)
+
+            )
+        })
 
         adaptor.setList(seletedImageList)
         adaptor.notifyDataSetChanged()
@@ -204,7 +215,14 @@ class SelectedImageActivity : AppCompatActivity() {
 
     private val requestPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            openCamera()
+
+            if(isGranted){
+                openCamera()
+            }
+            else{
+               Toast.makeText(applicationContext,"Camera permission is required to use the camera.",Toast.LENGTH_SHORT).show()
+            }
+
         }
 
     private fun isCameraPermissionGranted(): Boolean {
@@ -214,6 +232,22 @@ class SelectedImageActivity : AppCompatActivity() {
         ) == PackageManager.PERMISSION_GRANTED
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == RESULT_OK) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted
+                openCamera()
+            } else {
+                // Permission denied
+                Toast.makeText(this, "Camera permission is required to use the camera", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -319,8 +353,8 @@ class SelectedImageActivity : AppCompatActivity() {
             // Do something with the selected radio button
             // For example, display a toast with the selected option
             imageQuality = when (selectedText) {
-                "Low" -> 25
-                "Medium" -> 50
+                "Low" -> 50
+                "Medium" -> 75
                 "High" -> 100
                 else -> 100
             }

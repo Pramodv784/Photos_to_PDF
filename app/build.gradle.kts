@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.tasakiapps.photostopdf"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.tasakiapps.photostopdf"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -54,6 +54,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.github.bumptech.glide:glide:4.11.0")
     implementation( "com.intuit.sdp:sdp-android:1.1.0")
+    implementation("androidx.activity:activity:1.9.2")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -77,6 +78,13 @@ dependencies {
         exclude (group= "org.apache.commons", module= "commons-collections4")
     }
     implementation ("ro.andob.androidawt:androidawt:1.0.4")
+
+ //   implementation ("id.zelory:compressor:3.0.1")
+
+   // implementation ("com.itextpdf:itextg:5.5.13.2")
+
+   // implementation 'com.itextpdf:itextpdf:5.5.13.2'
+
 
 
 

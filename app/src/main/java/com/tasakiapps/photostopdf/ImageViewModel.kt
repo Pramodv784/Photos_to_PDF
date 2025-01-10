@@ -94,4 +94,9 @@ class ImageViewModel() :ViewModel() {
         listOfPhotoSelection.removeIfCompat{photo.path == it.path}
         photoSelectionLiveData.value = Pair(false, listOfPhotoSelection.toMutableList())
     }
+
+    fun removeAllSelectedImage(){
+        listOfPhotoSelection.clear()
+        photoSelectionLiveData.value = Pair(false, emptyList())
+    }
 }

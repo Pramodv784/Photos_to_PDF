@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
@@ -15,6 +16,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
@@ -145,6 +147,34 @@ object Utils {
         val matrix = Matrix()
         matrix.postRotate(angle)
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
+
+    fun composeEmail(
+        activity: Activity,
+        recipient: String?,
+        subject: String?,
+        body: String?
+    ) {
+        try {
+            // Create the email intent
+            val emailIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "message/rfc822" // Ensures only email clients can handle this
+                putExtra(Intent.EXTRA_EMAIL, arrayOf(recipient)) // Add recipient
+                putExtra(Intent.EXTRA_SUBJECT, subject) // Add subject
+                putExtra(Intent.EXTRA_TEXT, body) // Add email body
+            }
+
+            // Check if there's an app to handle the intent
+            val emailApps = activity.packageManager.queryIntentActivities(emailIntent, 0)
+            if (emailApps.isNotEmpty()) {
+                activity.startActivity(Intent.createChooser(emailIntent, "Choose an email client"))
+            } else {
+                Toast.makeText(activity, "No email app found", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(activity, "Failed to open email client", Toast.LENGTH_SHORT).show()
+        }
     }
 
 }

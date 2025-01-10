@@ -12,6 +12,8 @@
     <string name="pdf_manager">PDF Manager</string>
     <string name="pdf_converted">PDF Converted</string>
     <string name="pdf_reader">PDF Reader</string>
+    <string name="support_email">support@tasaki.com</string>
+    <string name="emailSubject" translatable="false">Feedback for Photos to PDF Android app version </string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

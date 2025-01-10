@@ -21,9 +21,9 @@ import java.util.Collections
 
 
 class SelectedImageAdapter(val context: Context, private var list: List<GridViewItem> = listOf()
-,  private val onItemMovedCallback: (List<GridViewItem>) -> Unit) :
+,  private val onItemMovedCallback: (List<GridViewItem>) -> Unit,private var itemClick:(Int) -> Unit) :
     RecyclerView.Adapter<SelectedImageAdapter.ViewHolder>(), ItemTouchHelperAdapter{
-    lateinit var itemClick: (item: String) -> Unit
+
     private val selectedItems = mutableSetOf<String>()
     private var llparent:LinearLayout?=null
 
@@ -58,7 +58,7 @@ class SelectedImageAdapter(val context: Context, private var list: List<GridView
 
 
 
-            binding.itemImage.setOnClickListener { binding.itemImage}
+            binding.itemImage.setOnClickListener { itemClick.invoke(position)}
         }
 
 

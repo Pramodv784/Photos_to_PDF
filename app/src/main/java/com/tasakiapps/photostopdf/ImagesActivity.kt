@@ -1,14 +1,11 @@
 package com.tasakiapps.photostopdf
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -17,14 +14,7 @@ import com.tasakiapps.photostopdf.adaptor.UserSelectImageAdapter
 import com.tasakiapps.photostopdf.databinding.ActivityImagesBinding
 import com.tasakiapps.photostopdf.extension.changeStatusBarColor
 import com.tasakiapps.photostopdf.model.GridViewItem
-import com.tasakiapps.photostopdf.ui.PDFViewActivity
 import com.tasakiapps.photostopdf.ui.SelectedImageActivity
-import com.tasakiapps.photostopdf.utils.ImageToPDF
-import com.tasakiapps.photostopdf.utils.Keys.IMAGE_LIST
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.io.File
 import java.io.Serializable
 
 
@@ -44,6 +34,7 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         initViews()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun observer() {
         viewModel.folderLiveData.observe(this) {
             val listFolder = ArrayList<String>()
@@ -89,6 +80,7 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                 binding.rvSelected.adapter = bottomAdaptor
                 binding.tvSelectedCount.text = "Selected: ${it.second.size}"
                 bottomAdaptor.notifyDataSetChanged()
+                var item:GridViewItem? = null
                 if (it.first) {
                     it.second.lastOrNull().let { photo ->
 
@@ -99,9 +91,11 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                     }
                 }
                 imageAdaptor.notifyDataSetChanged()
+
             } else {
                 binding.llBottom.visibility = View.GONE
             }
+           //     imageAdaptor.notifyDataSetChanged()
         }
     }
 
@@ -142,8 +136,15 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                 Toast.makeText(this,"Please Select Image",Toast.LENGTH_SHORT).show()
             }
         }
+
+        binding.tvDeselect.setOnClickListener {
+            viewModel.removeAllSelectedImage()
+            imageAdaptor.setRemoveSelection()
+            imageAdaptor.notifyDataSetChanged()
+        }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun onPhotoItemClicked(photo: GridViewItem) {
         val tag = photo.path
         val mapValue = imageAdaptor.counterMap[tag] ?: 0
@@ -155,7 +156,7 @@ class ImagesActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         } else {
             viewModel.onPhotoSelected(photo, 20)
         }
-        imageAdaptor.notifyDataSetChanged()
+       imageAdaptor.notifyItemChanged(imageAdaptor.getItemPosition(photo.path))
 
 
     }

@@ -1,5 +1,6 @@
 package com.tasakiapps.photostopdf.utils
 
+
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -10,24 +11,19 @@ import android.graphics.Paint
 import android.graphics.pdf.PdfDocument
 import android.media.ExifInterface
 import android.os.Environment
-import android.text.style.BackgroundColorSpan
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.lowagie.text.Document
-
-import com.lowagie.text.Font
 import com.lowagie.text.Image
 import com.lowagie.text.PageSize
 import com.lowagie.text.Paragraph
-import com.lowagie.text.Rectangle
 import com.lowagie.text.pdf.PdfWriter
 import com.tasakiapps.photostopdf.R
-
-
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import kotlin.math.min
 
 class ImageToPDF(private val context: Context) {
 
@@ -410,7 +406,7 @@ class ImageToPDF(private val context: Context) {
     fun createPdfWithMultipleImages(
         imagePaths: List<String>,
         dest: String,
-        quality: Int,
+        quality: Int, // Add quality parameter (1-100, where 100 is best quality)
         isOrientation: String,
         context: Context
     ) {
@@ -420,18 +416,19 @@ class ImageToPDF(private val context: Context) {
                 directory.mkdirs()
             }
 
-            // Create the PDF file
             val pdfFile = File(directory, dest)
-
-            // Initialize PdfDocument
             val pdfDocument = PdfDocument()
 
-            // Page size (adjust based on orientation)
-            val pageWidth = if (isOrientation.equals("Vertical", true)) 595 else 842
-            val pageHeight = if (isOrientation.equals("Vertical", true)) 842 else 595
+            // Set page dimensions based on orientation
+            val dpi = 150 // Desired DPI
+            val inchToPointFactor = dpi / 72.0
+            val isVertical = isOrientation.equals("Vertical", true)
+            val pageWidth = if (isVertical) (595 * inchToPointFactor).toInt() else (842 * inchToPointFactor).toInt()
+            val pageHeight = if (isVertical) (842 * inchToPointFactor).toInt() else (595 * inchToPointFactor).toInt()
 
+            val margin = 50 // Margin in pixels (adjust as needed)
 
-            // Get colors
+            // Define colors
             val greyColor = ContextCompat.getColor(context, R.color.color_grey)
             val whiteColor = ContextCompat.getColor(context, android.R.color.white)
 
@@ -452,62 +449,64 @@ class ImageToPDF(private val context: Context) {
                     else -> imgBitmap
                 }
 
-                // Compress the bitmap using the quality parameter
+                // Compress the image with the given quality parameter
                 val outputStream = ByteArrayOutputStream()
-                imgBitmap.compress(Bitmap.CompressFormat.JPEG, quality,outputStream)
+                imgBitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
                 val compressedBitmap = BitmapFactory.decodeByteArray(outputStream.toByteArray(), 0, outputStream.size())
+
+                // Scale the compressed bitmap to fit inside the page with margins
+                val imageAspectRatio = compressedBitmap.width.toFloat() / compressedBitmap.height.toFloat()
+                val contentWidth = pageWidth - 2 * margin
+                val contentHeight = pageHeight - 2 * margin
+                val contentAspectRatio = contentWidth.toFloat() / contentHeight.toFloat()
+
+                val scaledWidth: Int
+                val scaledHeight: Int
+                if (imageAspectRatio > contentAspectRatio) {
+                    // Image is wider
+                    scaledWidth = contentWidth
+                    scaledHeight = (contentWidth / imageAspectRatio).toInt()
+                } else {
+                    // Image is taller
+                    scaledHeight = contentHeight
+                    scaledWidth = (contentHeight * imageAspectRatio).toInt()
+                }
+
+                val scaledBitmap = Bitmap.createScaledBitmap(
+                    compressedBitmap,
+                    scaledWidth,
+                    scaledHeight,
+                    true
+                )
 
                 // Create a new page
                 val pageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, index + 1).create()
                 val page = pdfDocument.startPage(pageInfo)
                 val canvas = page.canvas
 
-                // Draw grey background
+                // Draw grey background (entire page background)
                 val backgroundPaint = Paint()
                 backgroundPaint.color = greyColor
                 canvas.drawRect(0f, 0f, pageWidth.toFloat(), pageHeight.toFloat(), backgroundPaint)
 
-                // Define white container dimensions
-                val containerMargin = 50f // Adjust margin as needed
-                val containerLeft = containerMargin
-                val containerTop = containerMargin
-                val containerRight = pageWidth - containerMargin
-                val containerBottom = pageHeight - containerMargin
+                // Draw white container (content area background)
+                val containerLeft = margin.toFloat()
+                val containerTop = margin.toFloat()
+                val containerRight = (pageWidth - margin).toFloat()
+                val containerBottom = (pageHeight - margin).toFloat()
 
-                // Draw white container
                 val containerPaint = Paint()
                 containerPaint.color = whiteColor
                 canvas.drawRect(containerLeft, containerTop, containerRight, containerBottom, containerPaint)
 
-                // Scale and center the image inside the white container
-                val containerWidth = containerRight - containerLeft
-                val containerHeight = containerBottom - containerTop
-                val imageAspectRatio = compressedBitmap.width.toFloat() / compressedBitmap.height.toFloat()
-                val containerAspectRatio = containerWidth / containerHeight
-
-                val finalImageWidth: Int
-                val finalImageHeight: Int
-                if (imageAspectRatio > containerAspectRatio) {
-                    // Image is wider relative to the container
-                    finalImageWidth = containerWidth.toInt()
-                    finalImageHeight = (containerWidth / imageAspectRatio).toInt()
-                } else {
-                    // Image is taller relative to the container
-                    finalImageHeight = containerHeight.toInt()
-                    finalImageWidth = (containerHeight * imageAspectRatio).toInt()
-                }
-
-                val scaledBitmap = Bitmap.createScaledBitmap(
-                    compressedBitmap,
-                    finalImageWidth,
-                    finalImageHeight,
-                    true
-                )
-
-                // Center the image in the white container
-                val xPos = containerLeft + (containerWidth - scaledBitmap.width) / 2f
-                val yPos = containerTop + (containerHeight - scaledBitmap.height) / 2f
+                // Draw the scaled image centered within the content area
+                val xPos = containerLeft + (contentWidth - scaledBitmap.width) / 2f
+                val yPos = containerTop + (contentHeight - scaledBitmap.height) / 2f
                 canvas.drawBitmap(scaledBitmap, xPos, yPos, null)
+
+                // Recycle the scaled and compressed bitmap
+                scaledBitmap.recycle()
+                compressedBitmap.recycle()
 
                 // Finish the page
                 pdfDocument.finishPage(page)
@@ -519,13 +518,119 @@ class ImageToPDF(private val context: Context) {
             // Close the document
             pdfDocument.close()
 
-            // Notify success
             pdfCallback.invoke(true, dest)
+
+            // Notify success
+            println("PDF created at: ${pdfFile.absolutePath}")
 
         } catch (e: Exception) {
             e.printStackTrace()
-            // Notify failure
-            pdfCallback.invoke(false, e.message ?: "Error creating PDF")
+            println("Error creating PDF: ${e.message}")
+        }
+    }
+
+
+
+
+    fun createPdfWithMultipleImages2(
+        imagePaths: List<String>,
+        dest: String,
+        quality: Int, // Compression quality (1-100, where 100 is best quality)
+        isOrientation: String,
+        context: Context
+    ) {
+        try {
+            val directory = File(Environment.getExternalStorageDirectory(), "PDFFiles")
+            if (!directory.exists()) {
+                directory.mkdirs()
+            }
+
+            val pdfFile = File(directory, dest)
+            val pdfDocument = PdfDocument()
+
+            // Define page dimensions based on orientation
+            val isVertical = isOrientation.equals("Vertical", true)
+            val dpi = 150 // Lower DPI for smaller file size
+            val inchToPointFactor = dpi / 72.0
+            val pageWidth = if (isVertical) (595 * inchToPointFactor).toInt() else (842 * inchToPointFactor).toInt()
+            val pageHeight = if (isVertical) (842 * inchToPointFactor).toInt() else (595 * inchToPointFactor).toInt()
+
+            val margin = 50 // Margins in points (adjust as needed)
+
+            for ((index, imagePath) in imagePaths.withIndex()) {
+                val imgFile = File(imagePath)
+
+                // Decode image with resizing to reduce memory and improve performance
+                val options = BitmapFactory.Options().apply {
+                    inJustDecodeBounds = true // Load bounds only
+                    BitmapFactory.decodeFile(imgFile.absolutePath, this)
+                    val targetWidth = pageWidth - 2 * margin
+                    val targetHeight = pageHeight - 2 * margin
+                    val scaleFactor = maxOf(
+                        outWidth / targetWidth,
+                        outHeight / targetHeight,
+                        1 // Ensure at least 1 (no upscale)
+                    )
+                    inSampleSize = scaleFactor
+                    inJustDecodeBounds = false // Load actual image with scaling
+                }
+
+                val originalBitmap = BitmapFactory.decodeFile(imgFile.absolutePath, options) ?: continue
+
+                // Handle image rotation using EXIF metadata
+                val exif = ExifInterface(imgFile.absolutePath)
+                val orientation = exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL
+                )
+                val rotatedBitmap = when (orientation) {
+                    ExifInterface.ORIENTATION_ROTATE_90 -> rotateBitmap(originalBitmap, 90f)
+                    ExifInterface.ORIENTATION_ROTATE_180 -> rotateBitmap(originalBitmap, 180f)
+                    ExifInterface.ORIENTATION_ROTATE_270 -> rotateBitmap(originalBitmap, 270f)
+                    else -> originalBitmap
+                }
+
+                // Compress the image with the given quality parameter
+                val outputStream = ByteArrayOutputStream()
+                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
+                val compressedBitmap = BitmapFactory.decodeByteArray(outputStream.toByteArray(), 0, outputStream.size())
+
+                // Create a new page
+                val pageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, index + 1).create()
+                val page = pdfDocument.startPage(pageInfo)
+                val canvas = page.canvas
+
+                // Draw grey background (entire page background)
+                val backgroundPaint = Paint()
+                backgroundPaint.color = ContextCompat.getColor(context, R.color.color_grey)
+                canvas.drawRect(0f, 0f, pageWidth.toFloat(), pageHeight.toFloat(), backgroundPaint)
+
+                // Draw image centered within content area
+                val contentWidth = pageWidth - 2 * margin
+                val contentHeight = pageHeight - 2 * margin
+                val xPos = margin.toFloat() + (contentWidth - compressedBitmap.width) / 2f
+                val yPos = margin.toFloat() + (contentHeight - compressedBitmap.height) / 2f
+                canvas.drawBitmap(compressedBitmap, xPos, yPos, null)
+
+                // Recycle bitmaps to free memory
+                if (rotatedBitmap !== originalBitmap) rotatedBitmap.recycle()
+                originalBitmap.recycle()
+                compressedBitmap.recycle()
+
+                // Finish the page
+                pdfDocument.finishPage(page)
+            }
+
+            // Write the document to file
+            pdfDocument.writeTo(FileOutputStream(pdfFile))
+            pdfDocument.close()
+            pdfCallback.invoke(true, dest)
+
+            println("PDF created at: ${pdfFile.absolutePath}")
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            println("Error creating PDF: ${e.message}")
         }
     }
 
@@ -540,17 +645,5 @@ class ImageToPDF(private val context: Context) {
         return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
     }
 
-
-
-
-
-
-
-    fun compressImage(imagePath: String, quality: Int): ByteArray {
-        val bitmap = BitmapFactory.decodeFile(imagePath)
-        val outputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
-        return outputStream.toByteArray()
-    }
 
 }

@@ -76,6 +76,9 @@ class ImageAdapter(val context: Context, private var list: List<GridViewItem> = 
             lconst.setBackgroundResource(0)
         }
     }
+    fun setRemoveSelection(){
+        counterMap.clear()
+    }
 
     fun decreaseAllValueOnMap(value: Int) {
         counterMap.forEach { kv ->
@@ -83,6 +86,10 @@ class ImageAdapter(val context: Context, private var list: List<GridViewItem> = 
                 counterMap[kv.key] = counterMap[kv.key]?.minus(1) ?: 1
             }
         }
+    }
+    fun getItemPosition(path: String): Int {
+        return list.indexOfFirst { it.path == path }
+
     }
 
     override fun getItemCount(): Int {
